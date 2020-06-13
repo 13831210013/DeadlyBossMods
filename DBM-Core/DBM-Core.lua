@@ -1393,7 +1393,6 @@ do
 			self.VoiceVersions = {}
 			for i = 1, GetNumAddOns() do
 				local addonName = GetAddOnInfo(i)
-				print(addonName)
 				local enabled = GetAddOnEnableState(playerName, i)
 				if GetAddOnMetadata(i, "X-DBM-Mod") then
 					if enabled ~= 0 then
