@@ -1470,7 +1470,7 @@ do
 					if checkEntry(bannedMods, addonName) then
 						AddMsg(self, "The mod " .. addonName .. " is deprecated and will not be available. Please remove the folder " .. addonName .. " from your Interface" .. (IsWindowsClient() and "\\" or "/") .. "AddOns folder to get rid of this message. Check for an updated version of " .. addonName .. " that is compatible with your game version.")
 					else
-						C_Timer.After(0.01, function()
+						C_TimerAfter(0.01, function()
 							local voiceValue = GetAddOnMetadata(i, "X-DBM-Voice-ShortName")
 							local voiceVersion = tonumber(GetAddOnMetadata(i, "X-DBM-Voice-Version") or 0)
 							if voiceVersion > 0 then--Do not insert voice version 0 into THIS table. 0 should be used by voice packs that insert only countdown
@@ -1488,7 +1488,7 @@ do
 					if checkEntry(bannedMods, addonName) then
 						AddMsg(self, "The mod " .. addonName .. " is deprecated and will not be available. Please remove the folder " .. addonName .. " from your Interface" .. (IsWindowsClient() and "\\" or "/") .. "AddOns folder to get rid of this message. Check for an updated version of " .. addonName .. " that is compatible with your game version.")
 					else
-						C_Timer.After(0.01, function()
+						C_TimerAfter(0.01, function()
 							local loaded = LoadAddOn(addonName)
 							local voiceGlobal = GetAddOnMetadata(i, "X-DBM-CountPack-GlobalName")
 							local insertFunction = _G[voiceGlobal]
@@ -1504,7 +1504,7 @@ do
 					if checkEntry(bannedMods, addonName) then
 						AddMsg(self, "The mod " .. addonName .. " is deprecated and will not be available. Please remove the folder " .. addonName .. " from your Interface" .. (IsWindowsClient() and "\\" or "/") .. "AddOns folder to get rid of this message. Check for an updated version of " .. addonName .. " that is compatible with your game version.")
 					else
-						C_Timer.After(0.01, function()
+						C_TimerAfter(0.01, function()
 							local loaded = LoadAddOn(addonName)
 							local victoryGlobal = GetAddOnMetadata(i, "X-DBM-VictoryPack-GlobalName")
 							local insertFunction = _G[victoryGlobal]
@@ -1520,7 +1520,7 @@ do
 					if checkEntry(bannedMods, addonName) then
 						AddMsg(self, "The mod " .. addonName .. " is deprecated and will not be available. Please remove the folder " .. addonName .. " from your Interface" .. (IsWindowsClient() and "\\" or "/") .. "AddOns folder to get rid of this message. Check for an updated version of " .. addonName .. " that is compatible with your game version.")
 					else
-						C_Timer.After(0.01, function()
+						C_TimerAfter(0.01, function()
 							local loaded = LoadAddOn(addonName)
 							local defeatGlobal = GetAddOnMetadata(i, "X-DBM-DefeatPack-GlobalName")
 							local insertFunction = _G[defeatGlobal]
@@ -1536,7 +1536,7 @@ do
 					if checkEntry(bannedMods, addonName) then
 						AddMsg(self, "The mod " .. addonName .. " is deprecated and will not be available. Please remove the folder " .. addonName .. " from your Interface" .. (IsWindowsClient() and "\\" or "/") .. "AddOns folder to get rid of this message. Check for an updated version of " .. addonName .. " that is compatible with your game version.")
 					else
-						C_Timer.After(0.01, function()
+						C_TimerAfter(0.01, function()
 							local loaded = LoadAddOn(addonName)
 							local musicGlobal = GetAddOnMetadata(i, "X-DBM-MusicPack-GlobalName")
 							local insertFunction = _G[musicGlobal]
