@@ -661,280 +661,88 @@ do
 					statSplit[stat] = true
 				end
 
-				local lastArea
-				for _, statType in pairs({ "lfr", "normal", "normal25", "heroic", "heroic25", "mythic", "challenge", "timewalker" }) do
+				local lastArea = 0
+				local statTypes = {
+					lfr			= PLAYER_DIFFICULTY3,
+					normal		= mod.addon.minExpansion < 6 and RAID_DIFFICULTY1 or PLAYER_DIFFICULTY1,
+					normal25	= RAID_DIFFICULTY2,
+					heroic		= mod.addon.minExpansion < 6 and RAID_DIFFICULTY3 or PLAYER_DIFFICULTY2,
+					heroic25	= RAID_DIFFICULTY4,
+					mythic		= PLAYER_DIFFICULTY6,
+					challenge	= mod.addon.minExpansion < 6 and CHALLENGE_MODE or (PLAYER_DIFFICULTY6 .. "+"),
+					timewalker	= PLAYER_DIFFICULTY_TIMEWALKER
+				}
+				for statType, statTitle in pairs(statTypes) do
 					if statSplit[statType] then
-						if lastArea and lastArea == 2 and #statSplit == 4 then -- Use top1, top2, bottom1, bottom2
+						if lastArea == 2 and #statSplit == 4 then -- Use top1, top2, bottom1, bottom2
 							lastArea = 3
 						end
+						lastArea = lastArea + 1
+						local section = sections[lastArea]
+						section.header:SetText(statTitle)
 					end
 				end
-
-				-- Set enable or disable per mods.
-				if mod.addon.oneFormat then -- Classic/BC Raids, Classic dungeons that don't have heroic mode
-					if mod.addon.hasTimeWalker then -- Time walking classic/BC raid (ie Black Temple)
-						statsType = 5
-						-- (Normal, Timewalking)
-						sections[1].header:SetText(PLAYER_DIFFICULTY1)
-						sections[2].header:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
-					else
-						-- (Normal)
-						statsType = 2 -- Fix for BC instance
-					end
-					-- Set Dims
-					Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 5 * singleline))
-					area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
+				Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
+				if #statSplit < 4 then
 					singleline = singleline + 1
-				elseif mod.addon.type == "PARTY" or mod.addon.type == "SCENARIO" then -- If party or scenario instance have no heroic, we should use oneFormat.
+				else
+					doubleline = doubleline + 1
+				end
+				area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * (#statSplit < 4 and 6 or 10))
+
+				if mod.addon.oneFormat then
+					if mod.addon.hasTimeWalker then
+						statsType = 5
+					else
+						statsType = 2
+					end
+				elseif mod.addon.type == "PARTY" or mod.addon.type == "SCENARIO" then
 					statsType = 1
-					if mod.addon.hasChallenge then -- Should never have an "Only normal" type
+					if mod.addon.hasChallenge then
 						if mod.onlyHeroic then
 							if mod.addon.hasTimeWalker then
 								statsType = 9
-								-- (Heroic, Challenge, Timewalker)
-								sections[1].header:SetText(PLAYER_DIFFICULTY2)
-								sections[2].header:SetText(CHALLENGE_MODE)
-								sections[3].header:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
-								-- Set Dims
-								Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-								area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-								singleline = singleline + 1
-							else -- No such dungeon exists. Good thing too cause this shit is broken here
-								-- (Heroic, Challenge)
-								sections[1].header:SetText(PLAYER_DIFFICULTY2)
-								sections[2].header:SetText(CHALLENGE_MODE)
-								-- Set Dims
-								Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-								area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-								singleline = singleline + 1
 							end
 						elseif mod.onlyMythic then
 							statsType = 11
-							-- (Mythic, Mythic+)
-							sections[1].header:SetText(PLAYER_DIFFICULTY6)
-							sections[2].header:SetText(PLAYER_DIFFICULTY6 .. "+")
-							--Set Dims
-							Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-							area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-							singleline = singleline + 1
-						elseif mod.addon.hasMythic then -- WoD (and later) dungeons with mythic mode (6.2+)
+						elseif mod.addon.hasMythic then
 							if mod.addon.hasTimeWalker then
 								statsType = 10
-								-- (Normal, Heroic, Mythic, Mythic+, Timewalker)
-								sections[1].header:SetText(PLAYER_DIFFICULTY1)
-								sections[2].header:SetText(PLAYER_DIFFICULTY2)
-								sections[3].header:SetText(PLAYER_DIFFICULTY6)
-								--Wod dungeons have same format as legion and bfa, but had a different name for the timed dungeon mode
-								--This simply sets the text based on expansion assignment of mod
-								if mod.addon.minExpansion < 6 then--WoD
-									sections[4].header:SetText(CHALLENGE_MODE)
-								else--Legion and BFA
-									sections[4].header:SetText(PLAYER_DIFFICULTY6.. "+")
-								end
-								sections[5].header:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
-								-- Set Dims
-								Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-								area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 10)
-								doubleline = doubleline + 1
-							elseif mod.imaspecialsnowflake or mod.addon.isExpedition then -- Assault of violet Hold or island expeditions
+							elseif mod.imaspecialsnowflake or mod.addon.isExpedition then
 								statsType = 12
-								-- (Normal, heroic, Mythic)
-								sections[1].header:SetText(PLAYER_DIFFICULTY1)
-								sections[2].header:SetText(PLAYER_DIFFICULTY2)
-								sections[3].header:SetText(PLAYER_DIFFICULTY6)
-								-- Set Dims
-								Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-								area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-								singleline = singleline + 1
-							elseif mod.noNormal then -- Basically any dungeon with everything BUT normal mode (CoS, Kara, Arcway)
+							elseif mod.noNormal then
 								statsType = 13
-								-- Heroic, Mythic, Mythic+
-								sections[1].header:SetText(PLAYER_DIFFICULTY2)
-								sections[2].header:SetText(PLAYER_DIFFICULTY6)
-								sections[3].header:SetText(PLAYER_DIFFICULTY6.. "+")
-								-- Set Dims
-								Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 *singleline) - (L.FontHeight * 10 * doubleline))
-								area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-								singleline = singleline + 1
 							else
 								statsType = 4
-								-- (Normal, Heroic, Mythic, Mythic+)
-								sections[1].header:SetText(PLAYER_DIFFICULTY1)
-								sections[2].header:SetText(PLAYER_DIFFICULTY2)
-								sections[4].header:SetText(PLAYER_DIFFICULTY6)
-								sections[5].header:SetText(PLAYER_DIFFICULTY6.. "+")
-								-- Set Dims
-								Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-								area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 10)
-								doubleline = doubleline + 1
 							end
 						else
 							if mod.addon.hasTimeWalker then
-								statsType = 8 -- MoP dungeons
-								-- (Normal, Heroic, Challenge, TimeWalker)
-								sections[1].header:SetText(PLAYER_DIFFICULTY1)
-								sections[2].header:SetText(PLAYER_DIFFICULTY2)
-								sections[4].header:SetText(CHALLENGE_MODE)
-								sections[5].header:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
-								-- Set Dims
-								Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-								area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 10)
-								doubleline = doubleline + 1
-							else
-								-- (Normal, Heroic, Challenge)
-								sections[1].header:SetText(PLAYER_DIFFICULTY1)
-								sections[2].header:SetText(PLAYER_DIFFICULTY2)
-								sections[3].header:SetText(CHALLENGE_MODE)
-								-- Set Dims
-								Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-								area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-								singleline = singleline + 1
+								statsType = 8
 							end
 						end
-					elseif mod.onlyNormal then -- This identical to mod.addon.oneFormat but used to set certain mods to this that exist in a mod NOT using mod.addon.oneFormat mod (such as world bosses in cataclysm mods)
+					elseif mod.onlyNormal then
 						if mod.addon.hasTimeWalker then
-							-- Normal, Heroic (far as I know no mod is using this over oneFormat with timewalking.
 							statsType = 5
-							-- (Normal, TimeWalker)
-							sections[1].header:SetText(PLAYER_DIFFICULTY1)
-							sections[2].header:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
-						else
-							-- (Normal)
-							-- Set header text.
-							sections[1].header:SetText(PLAYER_DIFFICULTY1)
 						end
-						-- Set Dims
-						Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline))
-						area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-						singleline = singleline + 1
-					elseif mod.onlyHeroic then -- Some special BC, Wrath, Cata bosses
+					elseif mod.onlyHeroic then
 						if mod.addon.hasTimeWalker then
 							statsType = 6
-							-- (Heroic, TimeWalker)
-							sections[1].header:SetText(PLAYER_DIFFICULTY2)
-							sections[2].header:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
-						else
-							-- (Heroic)
-							sections[2].header:SetText(PLAYER_DIFFICULTY2)
 						end
-						-- Set Dims
-						Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline))
-						area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-						singleline = singleline + 1
-					else -- Dungeons that are Normal, Heroic
+					else
 						if mod.addon.hasTimeWalker then
 							statsType = 7
-							-- (Normal, Heroic, TimeWalker)
-							sections[1].header:SetText(PLAYER_DIFFICULTY1)
-							sections[2].header:SetText(PLAYER_DIFFICULTY2)
-							sections[3].header:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
-						else
-							-- (Normal, Heroic)
-							sections[1].header:SetText(PLAYER_DIFFICULTY1)
-							sections[2].header:SetText(PLAYER_DIFFICULTY2)
 						end
-						-- Set Dims
-						Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline))
-						area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-						singleline = singleline + 1
 					end
-				elseif mod.addon.type == "RAID" and mod.addon.noHeroic and not mod.addon.hasMythic then -- Early wrath
-					if mod.addon.hasTimeWalker then -- Timewalking wrath raid like Ulduar
-						-- (10 Player, 25 Player, TimeWalker)
-						sections[1].header:SetText(RAID_DIFFICULTY1)
-						sections[2].header:SetText(RAID_DIFFICULTY2)
-						sections[3].header:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
-					else
-						-- (10 Player, 25 Player)
-						sections[1].header:SetText(RAID_DIFFICULTY1)
-						sections[2].header:SetText(RAID_DIFFICULTY2)
-					end
-					-- Set Dims
-					Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline))
-					area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-					singleline = singleline + 1
-				elseif mod.addon.type == "RAID" and not mod.addon.hasLFR and not mod.addon.hasMythic then -- Cata(except DS) and some wrath raids (ICC, ToGC)
-					if mod.addon.hasTimeWalker then--Firelands
+				elseif mod.addon.type == "RAID" and mod.addon.noHeroic and not mod.addon.hasMythic then
+					-- Nothing
+				elseif mod.addon.type == "RAID" and not mod.addon.hasLFR and not mod.addon.hasMythic then
+					if mod.addon.hasTimeWalker then
 						statsType = 7
-						-- (Normal, Heroic, TimeWalker)
-						sections[1].header:SetText(PLAYER_DIFFICULTY1)
-						sections[2].header:SetText(PLAYER_DIFFICULTY2)
-						sections[3].header:SetText(PLAYER_DIFFICULTY_TIMEWALKER)
-						-- Set Dims
-						Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline))
-						area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-						singleline = singleline + 1
-					elseif mod.onlyHeroic then -- Sinestra & Ra-den
-						sections[4].header:SetText(RAID_DIFFICULTY3)
-						sections[4].header:SetFontObject(GameFontHighlightSmall)
-						sections[5].header:SetText(RAID_DIFFICULTY4)
-						sections[5].header:SetFontObject(GameFontHighlightSmall)
-						-- Set Dims
-						Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-						area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-						singleline = singleline + 1
-					elseif mod.onlyNormal then -- Used?
-						-- (10 Player, 25 Player)
-						sections[1].header:SetText(RAID_DIFFICULTY1)
-						sections[2].header:SetText(RAID_DIFFICULTY2)
-						-- Set Dims
-						Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-						area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-						singleline = singleline + 1
-					else
-						-- (10 Player, 25 Player, 10 Player Heroic, 25 Player Heroic)
-						sections[1].header:SetText(RAID_DIFFICULTY1)
-						sections[2].header:SetText(RAID_DIFFICULTY2)
-						sections[4].header:SetText(RAID_DIFFICULTY3)
-						sections[5].header:SetText(RAID_DIFFICULTY4)
-						-- Set Dims
-						Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-						area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 10)
-						doubleline = doubleline + 1
 					end
-				elseif mod.addon.type == "RAID" and not mod.addon.hasMythic then -- DS + All MoP raids(except SoO)
-					Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-					if mod.onlyHeroic then--Ra-den
-						-- (Heroic 10, Heroic 25)
-						sections[4].header:SetText(RAID_DIFFICULTY3)
-						sections[4].header:SetFontObject(GameFontHighlightSmall)
-						sections[5].header:SetText(RAID_DIFFICULTY4)
-						sections[5].header:SetFontObject(GameFontHighlightSmall)
-						-- Set Dims
-						area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 6)
-						singleline = singleline + 1
-					else
-						-- Normal 10, Normal 25, Heroic 10, Heroic 25, LFR
-						sections[1].header:SetText(RAID_DIFFICULTY1)
-						sections[2].header:SetText(RAID_DIFFICULTY2)
-						sections[3].header:SetText(PLAYER_DIFFICULTY3)
-						sections[4].header:SetText(RAID_DIFFICULTY3)
-						sections[5].header:SetText(RAID_DIFFICULTY4)
-						-- Set Dims
-						area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 10)
-						doubleline = doubleline + 1
-					end
-				else -- WoD Zone
+				elseif mod.addon.type == "RAID" and not mod.addon.hasMythic then
+					-- Nothing
+				else
 					statsType = 3
-					Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-					if mod.onlyMythic then -- Future use
-						sections[5].header:SetText(PLAYER_DIFFICULTY6) -- Mythic
-						sections[5].header:SetFontObject(GameFontHighlightSmall)
-						-- Set Dims
-						area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 10)
-						singleline = singleline + 1
-					else
-						-- Normal, Heroic, Mythic, LFR
-						sections[1].header:SetText(PLAYER_DIFFICULTY3) -- Raid Finder
-						sections[2].header:SetText(PLAYER_DIFFICULTY1) -- Normal
-						sections[4].header:SetText(PLAYER_DIFFICULTY2) -- Heroic
-						sections[4].header:SetFontObject(GameFontHighlightSmall)
-						sections[5].header:SetText(PLAYER_DIFFICULTY6) -- Mythic
-						sections[5].header:SetFontObject(GameFontHighlightSmall)
-						-- Set Dims
-						area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * 10)
-						doubleline = doubleline + 1
-					end
 				end
 				table.insert(area.onshowcall, OnShowGetStats(mod.id, statsType, sections))
 			end
