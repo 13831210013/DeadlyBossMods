@@ -294,181 +294,6 @@ do
 		return function(self)
 			local mod = DBM:GetModByName(bossid)
 			local stats = mod.stats
-			if statsType == 1 then -- Party: normal, heroic, challenge)
-				sections[1].value1:SetText(stats.normalKills)
-				sections[1].value2:SetText(stats.normalPulls - stats.normalKills)
-				sections[1].value3:SetText(stats.normalBestTime and ("%d:%02d"):format(mfloor(stats.normalBestTime / 60), stats.normalBestTime % 60) or "-")
-				sections[2].value1:SetText(stats.heroicKills)
-				sections[2].value2:SetText(stats.heroicPulls - stats.heroicKills)
-				sections[2].value3:SetText(stats.heroicBestTime and ("%d:%02d"):format(mfloor(stats.heroicBestTime / 60), stats.heroicBestTime % 60) or "-")
-				sections[3].value1:SetText(stats.challengeKills)
-				sections[3].value2:SetText(stats.challengePulls - stats.challengeKills)
-				if stats.challengeBestRank and stats.challengeBestRank > 0 then
-					sections[3].value3:SetText(stats.challengeBestTime and ("%d:%02d (%d)"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-", stats.challengeBestRank)
-				else
-					sections[3].value3:SetText(stats.challengeBestTime and ("%d:%02d"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-")
-				end
-			elseif statsType == 2 and stats.normal25Pulls and stats.normal25Pulls > 0 and stats.normal25Pulls > stats.normalPulls then -- Fix for BC instance
-				sections[1].value1:SetText(stats.normal25Kills)
-				sections[1].value2:SetText(stats.normal25Pulls - stats.normal25Kills)
-				sections[1].value3:SetText(stats.normal25BestTime and ("%d:%02d"):format(mfloor(stats.normal25BestTime / 60), stats.normal25BestTime % 60) or "-")
-			elseif statsType == 3 then -- WoD RAID difficulty stats, TOP: Normal, LFR. BOTTOM. Heroic, Mythic
-				sections[1].value1:SetText(stats.lfr25Kills)
-				sections[1].value2:SetText(stats.lfr25Pulls - stats.lfr25Kills)
-				sections[1].value3:SetText(stats.lfr25BestTime and ("%d:%02d"):format(mfloor(stats.lfr25BestTime / 60), stats.lfr25BestTime % 60) or "-")
-				sections[2].value1:SetText(stats.normalKills)
-				sections[2].value2:SetText(stats.normalPulls - stats.normalKills)
-				sections[2].value2:SetText(stats.normalBestTime and ("%d:%02d"):format(mfloor(stats.normalBestTime / 60), stats.normalBestTime % 60) or "-")
-				sections[4].value1:SetText(stats.heroicKills)
-				sections[4].value2:SetText(stats.heroicPulls - stats.heroicKills)
-				sections[4].value3:SetText(stats.heroicBestTime and ("%d:%02d"):format(mfloor(stats.heroicBestTime / 60), stats.heroicBestTime % 60) or "-")
-				sections[5].value1:SetText(stats.mythicKills)
-				sections[5].value2:SetText(stats.mythicPulls - stats.mythicKills)
-				sections[5].value3:SetText(stats.mythicBestTime and ("%d:%02d"):format(mfloor(stats.mythicBestTime / 60), stats.mythicBestTime % 60) or "-")
-			elseif statsType == 4 then -- Party: Normal, heroic, mythic, mythic+ (Ie standard dungeons 6.2/7.x/8.x)
-				sections[1].value1:SetText(stats.normalKills)
-				sections[1].value2:SetText(stats.normalPulls - stats.normalKills)
-				sections[1].value3:SetText(stats.normalBestTime and ("%d:%02d"):format(mfloor(stats.normalBestTime / 60), stats.normalBestTime % 60) or "-")
-				sections[2].value1:SetText(stats.heroicKills)
-				sections[2].value2:SetText(stats.heroicPulls - stats.heroicKills)
-				sections[2].value3:SetText(stats.heroicBestTime and ("%d:%02d"):format(mfloor(stats.heroicBestTime / 60), stats.heroicBestTime % 60) or "-")
-				sections[4].value1:SetText(stats.mythicKills)
-				sections[4].value2:SetText(stats.mythicPulls - stats.mythicKills)
-				sections[4].value3:SetText(stats.mythicBestTime and ("%d:%02d"):format(mfloor(stats.mythicBestTime / 60), stats.mythicBestTime % 60) or "-")
-				sections[5].value1:SetText(stats.challengeKills)
-				sections[5].value2:SetText(stats.challengePulls - stats.challengeKills)
-				if stats.challengeBestRank and stats.challengeBestRank > 0 then
-					sections[5].value3:SetText(stats.challengeBestTime and ("%d:%02d (%d)"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-", stats.challengeBestRank)
-				else
-					sections[5].value3:SetText(stats.challengeBestTime and ("%d:%02d"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-")
-				end
-			elseif statsType == 5 then -- Party/TW Raid: Normal, TimeWalker (some normal only dungeons with timewalker such as classic)
-				sections[1].value1:SetText(stats.normalKills)
-				sections[1].value2:SetText(stats.normalPulls - stats.normalKills)
-				sections[1].value3:SetText(stats.normalBestTime and ("%d:%02d"):format(mfloor(stats.normalBestTime / 60), stats.normalBestTime % 60) or "-")
-				sections[2].value1:SetText(stats.timewalkerKills)
-				sections[2].value2:SetText(stats.timewalkerPulls - stats.timewalkerKills)
-				sections[2].value3:SetText(stats.timewalkerBestTime and ("%d:%02d"):format(mfloor(stats.timewalkerBestTime / 60), stats.timewalkerBestTime % 60) or "-")
-			elseif statsType == 6 then -- Party: Heroic, TimeWalker instance (some heroic only dungeons with timewalker)
-				sections[1].value1:SetText(stats.heroicKills)
-				sections[1].value2:SetText(stats.heroicPulls-stats.heroicKills)
-				sections[1].value3:SetText(stats.heroicBestTime and ("%d:%02d"):format(mfloor(stats.heroicBestTime / 60), stats.heroicBestTime % 60) or "-")
-				sections[2].value1:SetText(stats.timewalkerKills)
-				sections[2].value2:SetText(stats.timewalkerPulls - stats.timewalkerKills)
-				sections[2].value3:SetText(stats.timewalkerBestTime and ("%d:%02d"):format(mfloor(stats.timewalkerBestTime / 60), stats.timewalkerBestTime % 60) or "-")
-			elseif statsType == 7 then -- Party: Normal, Heroic, TimeWalker instance (most wrath and cata dungeons). Raid: Firelands and likely Throne of Thunder when blizz adds it
-				sections[1].value1:SetText(stats.normalKills)
-				sections[1].value2:SetText(stats.normalPulls - stats.normalKills)
-				sections[1].value3:SetText(stats.normalBestTime and ("%d:%02d"):format(mfloor(stats.normalBestTime / 60), stats.normalBestTime % 60) or "-")
-				sections[2].value1:SetText(stats.heroicKills)
-				sections[2].value2:SetText(stats.heroicPulls - stats.heroicKills)
-				sections[2].value3:SetText(stats.heroicBestTime and ("%d:%02d"):format(mfloor(stats.heroicBestTime / 60), stats.heroicBestTime % 60) or "-")
-				sections[3].value1:SetText(stats.timewalkerKills)
-				sections[3].value2:SetText(stats.timewalkerPulls - stats.timewalkerKills)
-				sections[3].value3:SetText(stats.timewalkerBestTime and ("%d:%02d"):format(mfloor(stats.timewalkerBestTime / 60), stats.timewalkerBestTime % 60) or "-")
-			elseif statsType == 8 then -- Party: Normal, Heroic, Challenge, TimeWalker instance (Mop Dungeons. I realize CM is technically gone, but we still retain stats for users)
-				sections[1].value1:SetText(stats.normalKills)
-				sections[1].value2:SetText(stats.normalPulls - stats.normalKills)
-				sections[1].value3:SetText(stats.normalBestTime and ("%d:%02d"):format(mfloor(stats.normalBestTime / 60), stats.normalBestTime % 60) or "-")
-				sections[2].value1:SetText(stats.heroicKills)
-				sections[2].value2:SetText(stats.heroicPulls - stats.heroicKills)
-				sections[2].value3:SetText(stats.heroicBestTime and ("%d:%02d"):format(mfloor(stats.heroicBestTime / 60), stats.heroicBestTime % 60) or "-")
-				sections[4].value1:SetText(stats.challengeKills)
-				sections[4].value2:SetText(stats.challengePulls - stats.challengeKills)
-				if stats.challengeBestRank and stats.challengeBestRank > 0 then
-					sections[4].value3:SetText(stats.challengeBestTime and ("%d:%02d (%d)"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-", stats.challengeBestRank)
-				else
-					sections[4].value3:SetText(stats.challengeBestTime and ("%d:%02d"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-")
-				end
-				sections[5].value1:SetText(stats.timewalkerKills)
-				sections[5].value2:SetText(stats.timewalkerPulls - stats.timewalkerKills)
-				sections[5].value3:SetText(stats.timewalkerBestTime and ("%d:%02d"):format(mfloor(stats.timewalkerBestTime / 60), stats.timewalkerBestTime % 60) or "-")
-			elseif statsType == 9 then -- Party: Heroic, Challenge, TimeWalker instance (Special heroic only Mop or WoD bosses)
-				sections[1].value1:SetText(stats.heroicKills)
-				sections[1].value2:SetText(stats.heroicPulls - stats.heroicKills)
-				sections[1].value3:SetText(stats.heroicBestTime and ("%d:%02d"):format(mfloor(stats.heroicBestTime / 60), stats.heroicBestTime % 60) or "-")
-				sections[2].value1:SetText(stats.challengeKills)
-				sections[2].value2:SetText(stats.challengePulls - stats.challengeKills)
-				if stats.challengeBestRank and stats.challengeBestRank > 0 then
-					sections[2].value3:SetText(stats.challengeBestTime and ("%d:%02d (%d)"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-", stats.challengeBestRank)
-				else
-					sections[2].value3:SetText(stats.challengeBestTime and ("%d:%02d"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-")
-				end
-				sections[3].value1:SetText(stats.timewalkerKills)
-				sections[3].value2:SetText(stats.timewalkerPulls - stats.timewalkerKills)
-				sections[3].value3:SetText(stats.timewalkerBestTime and ("%d:%02d"):format(mfloor(stats.timewalkerBestTime / 60), stats.timewalkerBestTime % 60) or "-")
-			elseif statsType == 10 then -- Party: Normal, Heroic, Mythic, Mythic+, TimeWalker instance (Wod timewalking Dungeon)
-				sections[1].value1:SetText(stats.normalKills)
-				sections[1].value2:SetText(stats.normalPulls - stats.normalKills)
-				sections[1].value3:SetText(stats.normalBestTime and ("%d:%02d"):format(mfloor(stats.normalBestTime / 60), stats.normalBestTime % 60) or "-")
-				sections[2].value1:SetText(stats.heroicKills)
-				sections[2].value2:SetText(stats.heroicPulls - stats.heroicKills)
-				sections[2].value3:SetText(stats.heroicBestTime and ("%d:%02d"):format(mfloor(stats.heroicBestTime / 60), stats.heroicBestTime % 60) or "-")
-				sections[3].value1:SetText(stats.mythicKills)
-				sections[3].value2:SetText(stats.mythicPulls - stats.mythicKills)
-				sections[3].value3:SetText(stats.mythicBestTime and ("%d:%02d"):format(mfloor(stats.mythicBestTime / 60), stats.mythicBestTime % 60) or "-")
-				sections[4].value1:SetText(stats.challengeKills)
-				sections[4].value2:SetText(stats.challengePulls - stats.challengeKills)
-				if stats.challengeBestRank and stats.challengeBestRank > 0 then
-					sections[4].value3:SetText(stats.challengeBestTime and ("%d:%02d (%d)"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-", stats.challengeBestRank)
-				else
-					sections[4].value3:SetText(stats.challengeBestTime and ("%d:%02d"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-")
-				end
-				sections[5].value1:SetText(stats.timewalkerKills)
-				sections[5].value2:SetText(stats.timewalkerPulls - stats.timewalkerKills)
-				sections[5].value3:SetText(stats.timewalkerBestTime and ("%d:%02d"):format(mfloor(stats.timewalkerBestTime / 60), stats.timewalkerBestTime % 60) or "-")
-			elseif statsType == 11 then -- Party: Mythic, Mythic+ (7.0/8.0 mythic only dungeons)
-				sections[1].value1:SetText(stats.mythicKills)
-				sections[1].value2:SetText(stats.mythicPulls - stats.mythicKills)
-				sections[1].value3:SetText(stats.mythicBestTime and ("%d:%02d"):format(mfloor(stats.mythicBestTime / 60), stats.mythicBestTime % 60) or "-")
-				sections[2].value1:SetText(stats.challengeKills)
-				sections[2].value2:SetText(stats.challengePulls - stats.challengeKills)
-				if stats.challengeBestRank and stats.challengeBestRank > 0 then
-					sections[2].value3:SetText(stats.challengeBestTime and ("%d:%02d (%d)"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-", stats.challengeBestRank)
-				else
-					sections[2].value3:SetText(stats.challengeBestTime and ("%d:%02d"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-")
-				end
-			elseif statsType == 12 then -- Party: Normal, Heroic, Mythic instance (Basically a mythic dungeon that has no challenge mode/mythic+ or an isle expedition)
-				sections[1].value1:SetText(stats.normalKills)
-				sections[1].value2:SetText(stats.normalPulls - stats.normalKills)
-				sections[1].value3:SetText(stats.normalBestTime and ("%d:%02d"):format(mfloor(stats.normalBestTime / 60), stats.normalBestTime % 60) or "-")
-				sections[2].value1:SetText(stats.heroicKills)
-				sections[2].value2:SetText(stats.heroicPulls - stats.heroicKills)
-				sections[2].value3:SetText(stats.heroicBestTime and ("%d:%02d"):format(mfloor(stats.heroicBestTime / 60), stats.heroicBestTime % 60) or "-")
-				sections[3].value1:SetText(stats.mythicKills)
-				sections[3].value2:SetText(stats.mythicPulls - stats.mythicKills)
-				sections[3].value3:SetText(stats.mythicBestTime and ("%d:%02d"):format(mfloor(stats.mythicBestTime / 60), stats.mythicBestTime % 60) or "-")
-			elseif statsType == 13 then -- Party: Heroic, Mythic, Mythic+ instance (Karazhan, Court of Stars, Arcway 7.1.5/7.2 changes)
-				sections[1].value1:SetText(stats.heroicKills)
-				sections[1].value2:SetText(stats.heroicPulls - stats.heroicKills)
-				sections[1].value3:SetText(stats.heroicBestTime and ("%d:%02d"):format(mfloor(stats.heroicBestTime / 60), stats.heroicBestTime % 60) or "-")
-				sections[2].value1:SetText(stats.mythicKills)
-				sections[2].value2:SetText(stats.mythicPulls - stats.mythicKills)
-				sections[2].value3:SetText(stats.mythicBestTime and ("%d:%02d"):format(mfloor(stats.mythicBestTime / 60), stats.mythicBestTime % 60) or "-")
-				sections[3].value1:SetText(stats.challengeKills)
-				sections[3].value2:SetText(stats.challengePulls - stats.challengeKills)
-				if stats.challengeBestRank and stats.challengeBestRank > 0 then
-					sections[3].value3:SetText(stats.challengeBestTime and ("%d:%02d (%d)"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-", stats.challengeBestRank)
-				else
-					sections[3].value3:SetText(stats.challengeBestTime and ("%d:%02d"):format(mfloor(stats.challengeBestTime / 60), stats.challengeBestTime % 60) or "-")
-				end
-			else -- Legacy 10/25 raids
-				sections[1].value1:SetText(stats.normalKills)
-				sections[1].value2:SetText(stats.normalPulls - stats.normalKills)
-				sections[1].value3:SetText(stats.normalBestTime and ("%d:%02d"):format(mfloor(stats.normalBestTime / 60), stats.normalBestTime % 60) or "-")
-				sections[2].value1:SetText(stats.normal25Kills)
-				sections[2].value2:SetText(stats.normal25Pulls - stats.normal25Kills)
-				sections[2].value3:SetText(stats.normal25BestTime and ("%d:%02d"):format(mfloor(stats.normal25BestTime / 60), stats.normal25BestTime % 60) or "-")
-				sections[3].value1:SetText(stats.timewalkerKills)
-				sections[3].value2:SetText(stats.timewalkerPulls - stats.timewalkerKills)
-				sections[3].value3:SetText(stats.timewalkerBestTime and ("%d:%02d"):format(mfloor(stats.timewalkerBestTime / 60), stats.timewalkerBestTime % 60) or "-")
-				sections[4].value1:SetText(stats.heroicKills)
-				sections[4].value2:SetText(stats.heroicPulls - stats.heroicKills)
-				sections[4].value3:SetText(stats.heroicBestTime and ("%d:%02d"):format(mfloor(stats.heroicBestTime / 60), stats.heroicBestTime % 60) or "-")
-				sections[5].value1:SetText(stats.heroic25Kills)
-				sections[5].value2:SetText(stats.heroic25Pulls - stats.heroic25Kills)
-				sections[5].value3:SetText(stats.heroic25BestTime and ("%d:%02d"):format(mfloor(stats.heroic25BestTime / 60), stats.heroic25BestTime % 60) or "-")
-			end
 		end
 	end
 
@@ -582,40 +407,17 @@ do
 		local area = panel:CreateArea()
 		area.frame.isStats = true
 		area.frame:SetPoint("TOPLEFT", 10, modProfileArea and -180 or -25)
-		area.onshowcall = {}
 
 		for _, mod in ipairs(DBM.Mods) do
 			if mod.modId == addon.modId and (not subtab or subtab == mod.subTab) and not mod.isTrashMod and not mod.noStatistics then
-				local statsType = 0
 				if not mod.stats then
-					mod.stats = { }
+					mod.stats = {}
 				end
-				local stats = mod.stats
-				stats.normalKills = stats.normalKills or 0
-				stats.normalPulls = stats.normalPulls or 0
-				stats.heroicKills = stats.heroicKills or 0
-				stats.heroicPulls = stats.heroicPulls or 0
-				stats.challengeKills = stats.challengeKills or 0
-				stats.challengePulls = stats.challengePulls or 0
-				stats.challengeBestRank = stats.challengeBestRank or 0
-				stats.mythicKills = stats.mythicKills or 0
-				stats.mythicPulls = stats.mythicPulls or 0
-				stats.timewalkerKills = stats.timewalkerKills or 0
-				stats.timewalkerPulls = stats.timewalkerPulls or 0
-				stats.normal25Kills = stats.normal25Kills or 0
-				stats.normal25Pulls = stats.normal25Pulls or 0
-				stats.heroic25Kills = stats.heroic25Kills or 0
-				stats.heroic25Pulls = stats.heroic25Pulls or 0
-				stats.lfr25Kills = stats.lfr25Kills or 0
-				stats.lfr25Pulls = stats.lfr25Pulls or 0
-
 				local Title			= area:CreateText(mod.localization.general.name, nil, nil, GameFontHighlight, "LEFT")
 
-				local function CreateText(text, header, show)
+				local function CreateText(text, header)
 					local frame = area:CreateText(text or "", nil, nil, header and GameFontHighlightSmall or GameFontNormalSmall, "LEFT")
-					if not show then
-						frame:Hide()
-					end
+					frame:Hide()
 					return frame
 				end
 
@@ -656,9 +458,10 @@ do
 					sections[i] = section
 				end
 
-				local statSplit = {}
+				local statSplit, statCount = {}, 0
 				for stat in (mod.statTypes or mod.addon.statTypes):gmatch("%s?([^%s,]+)%s?,?") do
 					statSplit[stat] = true
+					statCount = statCount + 1
 				end
 
 				local lastArea = 0
@@ -674,84 +477,36 @@ do
 				}
 				for statType, statTitle in pairs(statTypes) do
 					if statSplit[statType] then
-						if lastArea == 2 and #statSplit == 4 then -- Use top1, top2, bottom1, bottom2
+						if statType == "lfr" then
+							statType = "lfr25" -- Because Myst stores stats weird
+						end
+						if lastArea == 2 and statCount == 4 then -- Use top1, top2, bottom1, bottom2
 							lastArea = 3
 						end
 						lastArea = lastArea + 1
 						local section = sections[lastArea]
 						section.header:SetText(statTitle)
+						area.frame:HookScript("OnShow", function()
+							local kills, pulls, bestRank, bestTime = mod.stats[statType .. "Kills"] or 0, mod.stats[statType .. "Pulls"] or 0, mod.stats[statType .. "BestRank"] or 0, mod.stats[statType .. "BestTime"]
+							section.value1:SetText(kills)
+							section.value2:SetText(pulls - kills)
+							if statType == "challenge" and bestRank > 0 then
+								section.value3:SetText(bestTime and ("%d:%02d (%d)"):format(mfloor(bestTime / 60), bestTime % 60) or "-", bestRank)
+							else
+								section.value3:SetText(bestTime and ("%d:%02d"):format(mfloor(bestTime / 60), bestTime % 60) or "-")
+							end
+						end)
 					end
 				end
 				Title:SetPoint("TOPLEFT", area.frame, "TOPLEFT", 10, -10 - (L.FontHeight * 6 * singleline) - (L.FontHeight * 10 * doubleline))
-				if #statSplit < 4 then
+				if statCount < 4 then
 					singleline = singleline + 1
 				else
 					doubleline = doubleline + 1
 				end
-				area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * (#statSplit < 4 and 6 or 10))
-
-				if mod.addon.oneFormat then
-					if mod.addon.hasTimeWalker then
-						statsType = 5
-					else
-						statsType = 2
-					end
-				elseif mod.addon.type == "PARTY" or mod.addon.type == "SCENARIO" then
-					statsType = 1
-					if mod.addon.hasChallenge then
-						if mod.onlyHeroic then
-							if mod.addon.hasTimeWalker then
-								statsType = 9
-							end
-						elseif mod.onlyMythic then
-							statsType = 11
-						elseif mod.addon.hasMythic then
-							if mod.addon.hasTimeWalker then
-								statsType = 10
-							elseif mod.imaspecialsnowflake or mod.addon.isExpedition then
-								statsType = 12
-							elseif mod.noNormal then
-								statsType = 13
-							else
-								statsType = 4
-							end
-						else
-							if mod.addon.hasTimeWalker then
-								statsType = 8
-							end
-						end
-					elseif mod.onlyNormal then
-						if mod.addon.hasTimeWalker then
-							statsType = 5
-						end
-					elseif mod.onlyHeroic then
-						if mod.addon.hasTimeWalker then
-							statsType = 6
-						end
-					else
-						if mod.addon.hasTimeWalker then
-							statsType = 7
-						end
-					end
-				elseif mod.addon.type == "RAID" and mod.addon.noHeroic and not mod.addon.hasMythic then
-					-- Nothing
-				elseif mod.addon.type == "RAID" and not mod.addon.hasLFR and not mod.addon.hasMythic then
-					if mod.addon.hasTimeWalker then
-						statsType = 7
-					end
-				elseif mod.addon.type == "RAID" and not mod.addon.hasMythic then
-					-- Nothing
-				else
-					statsType = 3
-				end
-				table.insert(area.onshowcall, OnShowGetStats(mod.id, statsType, sections))
+				area.frame:SetHeight(area.frame:GetHeight() + L.FontHeight * (statCount < 4 and 6 or 10))
 			end
 		end
-		area.frame:SetScript("OnShow", function(self)
-			for _, v in pairs(area.onshowcall) do
-				v()
-			end
-		end)
 		_G["DBM_GUI_OptionsFrame"]:DisplayFrame(panel.frame)
 	end
 
