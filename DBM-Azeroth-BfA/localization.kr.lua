@@ -7,11 +7,6 @@ local L
 --L= DBM:GetModLocalization(2378)
 
 -----------------------
--- Tashara --
------------------------
---L= DBM:GetModLocalization(2380)
-
------------------------
 -- Vuk'laz the Earthbreaker --
 -----------------------
 --L= DBM:GetModLocalization(2381)
