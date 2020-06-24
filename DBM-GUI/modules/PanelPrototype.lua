@@ -469,16 +469,6 @@ function PanelPrototype:CreateArea(name)
 	})
 end
 
-function PanelPrototype:Rename(newname)
-	self.frame.name = newname
-end
-
-function PanelPrototype:Destroy()
-	tremove(DBM_GUI.frameTypes[self.frame.frameType], self.frame.categoryid)
-	tremove(self.parent.panels, self.frame.panelid)
-	self.frame:Hide()
-end
-
 do
 	local myid = 100
 
@@ -502,7 +492,7 @@ do
 		if frameType == "option" then
 			frameType = 2
 		end
-		panel.categoryid = DBM_GUI.frameTypes[frameType or 1]:CreateCategory(panel, self and self.frame and self.frame.name)
+		panel.categoryid = DBM_GUI.tabs[frameType or 1]:CreateCategory(panel, self and self.frame and self.frame.name)
 		panel.frameType = frameType
 		PanelPrototype:SetLastObj(panel)
 		self.panels = self.panels or {}
@@ -515,4 +505,21 @@ do
 			__index = PanelPrototype
 		})
 	end
+end
+
+function DBM_GUI:NewCreateNewPanel(frameName, showSub)
+	local panel = CreateFrame("Frame", nil, _G["DBM_GUI_OptionsFramePanelContainer"])
+	local container = _G["DBM_GUI_OptionsFramePanelContainer"]
+	panel:SetSize(container:GetWidth(), container:GetHeight())
+	panel:SetPoint("TOPLEFT", "DBM_GUI_OptionsFramePanelContainer", "TOPLEFT")
+	panel.name = frameName
+	panel.showSub = showSub or showSub == nil
+	panel:Hide()
+	PanelPrototype:SetLastObj(panel)
+	return setmetatable({
+		frame	= panel,
+		parent	= self
+	}, {
+		__index = PanelPrototype
+	})
 end

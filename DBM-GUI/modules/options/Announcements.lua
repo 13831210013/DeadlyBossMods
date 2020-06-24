@@ -15,7 +15,7 @@ else
 	standardFont = "Fonts\\FRIZQT__.TTF"
 end
 
-local RaidWarningPanel = DBM_GUI_Frame:CreateNewPanel(L.Tab_RaidWarning, "option")
+local RaidWarningPanel = DBM_GUI_Options:CreateNewPanel(L.Tab_RaidWarning)
 
 local raidwarnoptions = RaidWarningPanel:CreateArea(L.RaidWarning_Header)
 

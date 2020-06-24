@@ -140,14 +140,6 @@ frameWebsiteButton:SetScript("OnClick", function()
 	DBM:ShowUpdateReminder(nil, nil, CL.COPY_URL_DIALOG)
 end)
 
-local bossMods = CreateFrame("Frame", "$parentBossMods", frame)
-bossMods.name = L.OTabBosses
-frame:CreateTab(bossMods)
-
-local DBMOptions = CreateFrame("Frame", "$parentDBMOptions", frame)
-DBMOptions.name = L.OTabOptions
-frame:CreateTab(DBMOptions)
-
 local hack = OptionsList_OnLoad
 function OptionsList_OnLoad(self, ...)
 	if self:GetName() ~= frame:GetName() .. "List" then
@@ -171,7 +163,7 @@ for i = 1, math.floor(UIParent:GetHeight() / 18) do
 	button:RegisterForClicks("LeftButtonUp")
 	button:SetScript("OnClick", function(self)
 		frame:ClearSelection()
-		frame.tabs[frame.tab].selection = self.element
+		frame.selection = self.element
 		self:LockHighlight()
 		frame:DisplayFrame(self.element)
 	end)
@@ -254,9 +246,6 @@ else
 	frameContainer:SetBackdrop(frameContainer.backdropInfo)
 end
 frameContainer:SetBackdropBorderColor(0.6, 0.6, 0.6, 1)
-
-local frameContainerHeaderText = frameContainer:CreateFontString("$parentHeaderText", "BACKGROUND", "GameFontHighlightSmall")
-frameContainerHeaderText:SetPoint("BOTTOMLEFT", frame, "TOPLEFT", 10, 1)
 
 local frameContainerFOV = CreateFrame("ScrollFrame", "$parentFOV", frameContainer, "FauxScrollFrameTemplate")
 frameContainerFOV:Hide()

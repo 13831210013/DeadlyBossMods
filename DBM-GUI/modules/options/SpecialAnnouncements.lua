@@ -14,7 +14,7 @@ else
 	standardFont = "Fonts\\FRIZQT__.TTF"
 end
 
-local specPanel = DBM_GUI_Frame:CreateNewPanel(L.Panel_SpecWarnFrame, "option")
+local specPanel = DBM_GUI_Options:CreateNewPanel(L.Panel_SpecWarnFrame)
 
 local specArea = specPanel:CreateArea(L.Area_SpecWarn)
 

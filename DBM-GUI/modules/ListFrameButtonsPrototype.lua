@@ -1,96 +1,120 @@
-local setmetatable, type, ipairs, tinsert = setmetatable, type, ipairs, table.insert
-local DBM, DBM_GUI = DBM, DBM_GUI
+local setmetatable, ipairs = setmetatable, ipairs
+local DBM_GUI = DBM_GUI
 
-local ListFrameButtonsPrototype = {}
+local L = DBM_GUI_L
 
-function ListFrameButtonsPrototype:CreateCategory(frame, parent)
-	if not type(frame) == "table" then
-		DBM:AddMsg("Failed to create category - frame is not a table")
-		return false
-	elseif not frame.name then
-		DBM:AddMsg("Failed to create category - frame.name is missing")
-		return false
-	elseif self:IsPresent(frame.name) then
-		DBM:AddMsg("Frame (" .. frame.name .. ") already exists")
-		return false
-	end
-	frame.depth = parent and self:GetDepth(parent) or 1
-	self:SetParentHasChilds(parent)
-	tinsert(self.Buttons, {
-		frame	= frame,
-		parent	= parent
-	})
-	return #self.Buttons
-end
+local TabPrototype = {}
 
-function ListFrameButtonsPrototype:IsPresent(name)
-	for _, v in ipairs(self.Buttons) do
-		if v.frame.name == name then
-			return true
-		end
-	end
-	return false
-end
-
-function ListFrameButtonsPrototype:GetDepth(name, depth)
+local function GetDepth(tab, name, depth)
 	depth = depth or 1
-	for _, v in ipairs(self.Buttons) do
+	for _, v in ipairs(tab.Buttons) do
 		if v.frame.name == name then
-			if v.parent == nil then
+			if not v.parent then
 				return depth + 1
-			else
-				depth = depth + self:GetDepth(v.parent, depth)
 			end
+			depth = depth + GetDepth(tab, v.parent, depth)
 		end
 	end
 	return depth
 end
 
-function ListFrameButtonsPrototype:SetParentHasChilds(parent)
+local function SetParentHasChilds(tab, parent)
 	if not parent then
 		return
 	end
-	for _, v in ipairs(self.Buttons) do
+	for _, v in ipairs(tab.Buttons) do
 		if v.frame.name == parent then
 			v.frame.haschilds = true
 		end
 	end
 end
 
-function ListFrameButtonsPrototype:GetVisibleTabs()
+local function GetVisibleSubButtons(tab, parent, tabs)
+	for _, v in ipairs(tab.Buttons) do
+		if v.parent == parent then
+			tabs[#tabs + 1] = v
+			if v.frame.showSub then
+				GetVisibleSubButtons(tab, v.frame.name, tabs)
+			end
+		end
+	end
+end
+
+function TabPrototype:CreateCategory(frame, parent)
+	frame.depth = parent and GetDepth(self, parent) or 1
+	SetParentHasChilds(self, parent)
+	self.Buttons[#self.Buttons + 1] = {
+		frame	= frame,
+		parent	= parent
+	}
+	return #self.Buttons
+end
+
+function TabPrototype:GetVisibleButtons()
 	local tabs = {}
 	for _, v in ipairs(self.Buttons) do
-		if v.parent == nil then
-			tinsert(tabs, v)
+		if not v.parent then
+			tabs[#tabs + 1] = v
 			if v.frame.showSub then
-				self:GetVisibleSubTabs(v.frame.name, tabs)
+				GetVisibleSubButtons(self, v.frame.name, tabs)
 			end
 		end
 	end
 	return tabs
 end
 
-function ListFrameButtonsPrototype:GetVisibleSubTabs(parent, tabs)
-	for _, v in ipairs(self.Buttons) do
-		if v.parent == parent then
-			tinsert(tabs, v)
-			if v.frame.showSub then
-				self:GetVisibleSubTabs(v.frame.name, tabs)
-			end
-		end
-	end
+function TabPrototype:CreateNewPanel(frameName, showSub)
+	local panel = DBM_GUI:NewCreateNewPanel(frameName, showSub)
+	panel.frame.depth = 1
+	self.Buttons[#self.Buttons + 1] = {
+		frame	= panel.frame
+	}
+	return panel
 end
 
-function DBM_GUI:CreateNewFauxScrollFrameList()
+function DBM_GUI:CreateNewTab(name)
+	local optionFrame = _G["DBM_GUI_OptionsFrame"]
 	local mt = setmetatable({
 		Buttons = {}
 	}, {
-		__index = ListFrameButtonsPrototype
+		__index = TabPrototype
 	})
-	DBM_GUI.frameTypes[#DBM_GUI.frameTypes + 1] = mt
+	local i = #DBM_GUI.tabs + 1
+	DBM_GUI.tabs[i] = mt
+	local frame = CreateFrame("Frame", "$parentDBM" .. i, optionFrame)
+	--frame.name = name
+	frame:Hide()
+	local button = CreateFrame("Button", "DBM_GUI_OptionsFrameTab" .. i, optionFrame, "OptionsFrameTabButtonTemplate")
+	local buttonText = _G[button:GetName() .. "Text"]
+	buttonText:SetText(name)
+	buttonText:SetPoint("LEFT", 22, -2)
+	buttonText:Show()
+	button:Show()
+	if i == 1 then
+		button:SetPoint("TOPLEFT", optionFrame, 20, -18)
+	else
+		button:SetPoint("TOPLEFT", "DBM_GUI_OptionsFrameTab" .. (i - 1), "TOPRIGHT", -15, 0)
+	end
+	button:SetScript("OnClick", function()
+		optionFrame:ShowTab(i)
+	end)
+	local buttonWidth = button:GetWidth()
+	function mt:Hide()
+		button:Hide()
+		button:SetWidth(15)
+	end
+	function mt:Show()
+		button:Show()
+		button:SetWidth(buttonWidth)
+	end
 	return mt
 end
 
 -- TODO: Should this go somewhere else?
-_G["DBM_GUI_Bosses"] = DBM_GUI:CreateNewFauxScrollFrameList()
-_G["DBM_GUI_Options"] = DBM_GUI:CreateNewFauxScrollFrameList()
+_G["DBM_GUI_Raids"] = DBM_GUI:CreateNewTab(L.OTabRaids)
+_G["DBM_GUI_Dungeons"] = DBM_GUI:CreateNewTab(L.OTabDungeons)
+_G["DBM_GUI_Options"] = DBM_GUI:CreateNewTab(L.OTabOptions)
+_G["DBM_GUI_Plugins"] = DBM_GUI:CreateNewTab(L.OTabPlugins)
+_G["DBM_GUI_About"] = DBM_GUI:CreateNewTab(L.OTabAbout)
+
+_G["DBM_GUI_Plugins"]:Hide() -- Only show plugins tab when there are registered plugins

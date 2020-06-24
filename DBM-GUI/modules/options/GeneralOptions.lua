@@ -1,5 +1,7 @@
 local L = DBM_GUI_L
-local generaloptions = DBM_GUI_Frame:CreateArea(L.General)
+
+local GeneralPanel = DBM_GUI_Options:CreateNewPanel(L.General)
+local generaloptions = GeneralPanel:CreateArea(L.General)
 
 local MiniMapIcon = generaloptions:CreateCheckButton(L.EnableMiniMapIcon, true)
 MiniMapIcon:SetScript("OnClick", function(self)
@@ -79,7 +81,7 @@ resetbutton:SetScript("OnClick", function()
 	DBM:RepositionFrames()
 end)
 
-local modelarea = DBM_GUI_Frame:CreateArea(L.ModelOptions)
+local modelarea = GeneralPanel:CreateArea(L.ModelOptions)
 
 modelarea:CreateCheckButton(L.EnableModels, true, nil, "EnableModels")
 
@@ -103,7 +105,7 @@ end)
 ModelSoundDropDown.myheight = 40
 ModelSoundDropDown:SetPoint("TOPLEFT", modelarea.frame, "TOPLEFT", 0, -50)
 
-local resizeOptions = DBM_GUI_Frame:CreateArea(L.ResizeOptions)
+local resizeOptions = GeneralPanel:CreateArea(L.ResizeOptions)
 
 local optionsFrame = _G["DBM_GUI_OptionsFrame"]
 

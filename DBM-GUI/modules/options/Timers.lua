@@ -14,7 +14,7 @@ else
 	standardFont = "Fonts\\FRIZQT__.TTF"
 end
 
-local BarSetupPanel = DBM_GUI_Frame:CreateNewPanel(L.BarSetup, "option")
+local BarSetupPanel = DBM_GUI_Options:CreateNewPanel(L.BarSetup)
 
 local BarColors = BarSetupPanel:CreateArea(L.AreaTitle_BarColors)
 local movemebutton = BarColors:CreateButton(L.MoveMe, 100, 16)

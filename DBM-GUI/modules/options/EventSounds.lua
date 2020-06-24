@@ -11,7 +11,8 @@ local Sounds = DBM_GUI:MixinSharedMedia3("sound", {
 	}
 })
 
-local eventSoundsPanel			= DBM_GUI_Frame:CreateNewPanel(L.Panel_EventSounds, "option")
+local eventSoundsPanel			= DBM_GUI_Options:CreateNewPanel(L.Panel_EventSounds)
+
 local eventSoundsGeneralArea	= eventSoundsPanel:CreateArea(L.Area_SoundSelection)
 
 local VictorySoundDropdown = eventSoundsGeneralArea:CreateDropdown(L.EventVictorySound, DBM.Victory, "DBM", "EventSoundVictory2", function(value)

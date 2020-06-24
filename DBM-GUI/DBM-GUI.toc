@@ -44,10 +44,9 @@ DBM-GUI_DropDown.lua
 # Modules
 modules\MainFramePrototype.lua
 modules\MainFrame.lua
-modules\ListFrameButtonsPrototype.lua
 modules\PanelPrototype.lua
+modules\ListFrameButtonsPrototype.lua
 
-modules\options\Options.lua
 modules\options\GeneralOptions.lua
 modules\options\Announcements.lua
 modules\options\SpecialAnnouncements.lua
@@ -60,3 +59,4 @@ modules\options\HideBlizzard.lua
 modules\options\Privacy.lua
 modules\options\ExtraFeatures.lua
 modules\options\Profile.lua
+modules\options\About.lua

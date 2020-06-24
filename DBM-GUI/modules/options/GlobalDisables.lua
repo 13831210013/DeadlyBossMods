@@ -1,6 +1,6 @@
 local L = DBM_GUI_L
 
-local spamPanel = DBM_GUI_Frame:CreateNewPanel(L.Panel_SpamFilter, "option")
+local spamPanel = DBM_GUI_Options:CreateNewPanel(L.Panel_SpamFilter)
 
 local spamAnnounces = spamPanel:CreateArea(L.Area_SpamFilter_Anounces)
 spamAnnounces:CreateCheckButton(L.SpamBlockNoShowAnnounce, true, nil, "DontShowBossAnnounces")
