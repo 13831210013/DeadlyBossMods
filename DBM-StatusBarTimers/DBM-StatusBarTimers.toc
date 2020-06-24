@@ -4,8 +4,8 @@
 ## Title-esMX:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFTemporizadores de Estado (REQUERIDO)|r
 ## Title-itIT:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FFBarre Temporizzatori (RICHIESTO)|r
 ## Title-koKR:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FF상태 바 타이머 (필수)|r
-## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FF狀態條計時器|r
 ## Title-zhCN:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FF状态条计时器|r
+## Title-zhTW:|cffffe00a<|r|cffff7d0aDBM|r|cffffe00a>|r |cff0055FF狀態條計時器|r
 ## Notes: DBM - status bar timer library
 ## Notes-esES: DBM - librería de temporizadores de estado
 ## Notes-esMX: DBM - librería de temporizadores de estado

@@ -2,7 +2,7 @@ local mod	= DBM:NewMod(2380, "DBM-Azeroth-BfA", 6, 1028)
 local L		= mod:GetLocalizedStrings()
 
 mod:SetRevision("@file-date-integer@")
---mod:SetCreatureID(132253)--Still Unknown, 3 IDs exist, only 1 is correct
+mod:SetCreatureID(155958)
 mod:SetEncounterID(2352)
 mod:SetReCombatTime(20)
 mod:SetZone()

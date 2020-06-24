@@ -23,10 +23,10 @@
 ## X-DBM-Mod-MinExpansion: 7
 
 localization.en.lua
-localization.kr.lua
 localization.cn.lua
-localization.tw.lua
 localization.es.lua
+localization.kr.lua
+localization.tw.lua
 
 Wrathion.lua
 Maut.lua

@@ -9,13 +9,15 @@
 ## X-DBM-Mod: 1
 ## X-DBM-Mod-Type: RAID
 ## X-DBM-Mod-Category: SHADOWLANDS
-## X-DBM-Mod-Has-Mythic : 1
+## X-DBM-StatTypes: lfr,normal,heroic,mythic
 ## X-DBM-Mod-Name: Castle Nathria
 ## X-DBM-Mod-Sort: 308
 ## X-DBM-Mod-MapID: 2296
 ## X-DBM-Mod-MinCoreRevision: 17286
 ## X-DBM-Mod-MinExpansion: 8
+
 localization.en.lua
+
 Shriekwing.lua
 HungeringDestroyer.lua
 AltimortheHuntsman.lua
