@@ -12100,8 +12100,8 @@ function bossModPrototype:SetModelRotation(r)
 	self.modelRotation = r
 end
 
-function bossModPrototype:SetModelMoveSpeed(v)
-	self.modelMoveSpeed = v
+function bossModPrototype:SetModelSequence(v)
+	self.modelSequence = v
 end
 
 function bossModPrototype:SetModelID(id)
@@ -12111,14 +12111,6 @@ end
 function bossModPrototype:SetModelSound(long, short)--PlaySoundFile prototype for model viewer, long is long sound, short is a short clip, configurable in UI, both sound paths defined in boss mods.
 	self.modelSoundLong = long
 	self.modelSoundShort = short
-end
-
-function bossModPrototype:EnableModel()
-	self.modelEnabled = true
-end
-
-function bossModPrototype:DisableModel()
-	self.modelEnabled = nil
 end
 
 --------------------

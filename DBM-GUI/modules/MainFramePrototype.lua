@@ -194,7 +194,13 @@ function frame:DisplayFrame(frame)
 				if mod.modelScale then
 					bossPreview:SetModelScale(mod.modelScale)
 				end
-				bossPreview:SetSequence(4)
+				if mod.modelOffsetX then
+					bossPreview:SetPosition(mod.modelOffsetX, mod.modelOffsetY, mod.modelOffsetZ)
+				end
+				if mod.modelRotation then
+					bossPreview:SetFacing(mod.modelRotation)
+				end
+				bossPreview:SetSequence(mod.modelSequence or 4)
 				if mod.modelSoundShort and DBM.Options.ModelSoundValue == "Short" then
 					DBM:PlaySoundFile(mod.modelSoundShort)
 				elseif mod.modelSoundLong and DBM.Options.ModelSoundValue == "Long" then
