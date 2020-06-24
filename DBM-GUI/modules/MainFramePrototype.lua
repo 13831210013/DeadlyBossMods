@@ -191,6 +191,9 @@ function frame:DisplayFrame(frame)
 				bossPreview:Show()
 				bossPreview:ClearModel()
 				bossPreview:SetDisplayInfo(mod.modelId or 0)
+				if mod.modelScale then
+					bossPreview:SetModelScale(mod.modelScale)
+				end
 				bossPreview:SetSequence(4)
 				if mod.modelSoundShort and DBM.Options.ModelSoundValue == "Short" then
 					DBM:PlaySoundFile(mod.modelSoundShort)
