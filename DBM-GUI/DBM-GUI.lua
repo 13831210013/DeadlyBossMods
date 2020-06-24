@@ -413,6 +413,18 @@ do
 				if not mod.stats then
 					mod.stats = {}
 				end
+
+				local statSplit, statCount = {}, 0
+				for stat in (mod.statTypes or mod.addon.statTypes):gmatch("%s?([^%s,]+)%s?,?") do
+					statSplit[stat] = true
+					statCount = statCount + 1
+				end
+
+				if statCount == 0 then
+					DBM:AddMsg("No statTypes available for " .. mod.modId)
+					return -- No stats available for this? Possibly a bug
+				end
+
 				local Title			= area:CreateText(mod.localization.general.name, nil, nil, GameFontHighlight, "LEFT")
 
 				local function CreateText(text, header)
@@ -456,12 +468,6 @@ do
 						section.value3:Show()
 					end
 					sections[i] = section
-				end
-
-				local statSplit, statCount = {}, 0
-				for stat in (mod.statTypes or mod.addon.statTypes):gmatch("%s?([^%s,]+)%s?,?") do
-					statSplit[stat] = true
-					statCount = statCount + 1
 				end
 
 				local lastArea = 0
