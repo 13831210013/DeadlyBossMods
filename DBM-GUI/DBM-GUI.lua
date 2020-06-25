@@ -511,7 +511,10 @@ do
 		_G["DBM_GUI_OptionsFrame"]:DisplayFrame(panel.frame)
 	end
 
-	local Categories = {}
+	local Categories = {
+		dungeons	= {},
+		raids		= {}
+	}
 	local subTabId = 0
 	local expansions = {
 		[0] = "CLASSIC",
@@ -519,16 +522,17 @@ do
 	}
 
 	function DBM_GUI:UpdateModList()
-		local raidsTab = _G["DBM_GUI_Raids"] -- This is here intentionally, as it doesn't exist until later on
+		local raidsTab, dungeonsTab = _G["DBM_GUI_Raids"], _G["DBM_GUI_Dungeons"] -- This is here intentionally, as it doesn't exist until later on
 
 		for _, addon in ipairs(DBM.AddOns) do
-			if not Categories[addon.category] then
-				Categories[addon.category] = raidsTab:CreateNewCategory(L["TabCategory_" .. addon.category:upper()] or L.TabCategory_OTHER, addon.category:upper() == expansions[GetExpansionLevel()])
+			local category = Categories[addon.type == "PARTY" and "dungeons" or "raids"]
+			if not category[addon.category] then
+				category[addon.category] = (addon.type == "PARTY" and dungeonsTab or raidsTab):CreateNewCategory(L["TabCategory_" .. addon.category:upper()] or L.TabCategory_OTHER, addon.category:upper() == expansions[GetExpansionLevel()])
 			end
 
 			if not addon.panel then
 				-- Create a Panel for "Naxxramas" "Eye of Eternity" ...
-				addon.panel = Categories[addon.category]:CreateNewPanel(addon.name or "Error: No-modId")
+				addon.panel = category[addon.category]:CreateNewPanel(addon.name or "Error: No-modId")
 
 				if not IsAddOnLoaded(addon.modId) then
 					local button = addon.panel:CreateButton(L.Button_LoadMod, 200, 30)
