@@ -536,16 +536,15 @@ do
 
 				if not IsAddOnLoaded(addon.modId) then
 					local button = addon.panel:CreateButton(L.Button_LoadMod, 200, 30)
-					button.modid = addon
 					button.headline = addon.panel:CreateText(L.BossModLoad_now, 350)
 					button.headline:SetHeight(50)
 					button.headline:SetPoint("CENTER", button, "CENTER", 0, 80)
 
 					button:SetScript("OnClick", function(self)
-						if DBM:LoadMod(self.modid, true) then
+						if DBM:LoadMod(addon, true) then
 							self:Hide()
 							self.headline:Hide()
-							CreateBossModTab(self.modid, self.modid.panel)
+							CreateBossModTab(addon, addon.panel)
 						end
 					end)
 					button:SetPoint("CENTER", 0, -20)
