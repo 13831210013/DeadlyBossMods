@@ -1,5 +1,5 @@
 local tonumber = tonumber
-local PlayMusic, StopMusic, GetCVar, SetCVar = PlayMusic, StopMusic, C_CVar.GetCVar, C_CVar.SetCVar
+local GetCVar, PlayMusic, SetCVar, StopMusic = GetCVar, PlayMusic, SetCVar, StopMusic
 local DBM, DBM_GUI = DBM, DBM_GUI
 
 local L = DBM_GUI_L
