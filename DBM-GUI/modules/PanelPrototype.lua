@@ -492,7 +492,6 @@ do
 		if frameType == "option" then
 			frameType = 2
 		end
-		panel.categoryid = DBM_GUI.tabs[frameType or 1]:CreateCategory(panel, self and self.frame and self.frame.name)
 		panel.frameType = frameType
 		PanelPrototype:SetLastObj(panel)
 		self.panels = self.panels or {}
@@ -507,19 +506,68 @@ do
 	end
 end
 
-function DBM_GUI:NewCreateNewPanel(frameName, showSub)
+local TabPrototype = {}
+
+function TabPrototype:CreateNewPanel(frameName, showSub)
 	local panel = CreateFrame("Frame", nil, _G["DBM_GUI_OptionsFramePanelContainer"])
-	local container = _G["DBM_GUI_OptionsFramePanelContainer"]
-	panel:SetSize(container:GetWidth(), container:GetHeight())
 	panel:SetPoint("TOPLEFT", "DBM_GUI_OptionsFramePanelContainer", "TOPLEFT")
-	panel.name = frameName
-	panel.showSub = showSub or showSub == nil
 	panel:Hide()
 	PanelPrototype:SetLastObj(panel)
-	return setmetatable({
+	local mt = setmetatable({
 		frame	= panel,
-		parent	= self
+		parent	= self,
+		depth	= 1,
+		showSub	= showSub or showSub == nil,
+		name	= frameName
 	}, {
 		__index = PanelPrototype
 	})
+	self.Buttons[#self.Buttons + 1] = mt
+	return mt
 end
+
+function DBM_GUI:CreateNewTab(name)
+	local optionFrame = _G["DBM_GUI_OptionsFrame"]
+	local mt = setmetatable({
+		Buttons = {}
+	}, {
+		__index = TabPrototype
+	})
+	local i = #DBM_GUI.tabs + 1
+	DBM_GUI.tabs[i] = mt
+	local frame = CreateFrame("Frame", "$parentDBM" .. i, optionFrame)
+	frame:Hide()
+	local button = CreateFrame("Button", "DBM_GUI_OptionsFrameTab" .. i, optionFrame, "OptionsFrameTabButtonTemplate")
+	local buttonText = _G[button:GetName() .. "Text"]
+	buttonText:SetText(name)
+	buttonText:SetPoint("LEFT", 22, -2)
+	buttonText:Show()
+	button:Show()
+	if i == 1 then
+		button:SetPoint("TOPLEFT", optionFrame, 20, -18)
+	else
+		button:SetPoint("TOPLEFT", "DBM_GUI_OptionsFrameTab" .. (i - 1), "TOPRIGHT", -15, 0)
+	end
+	button:SetScript("OnClick", function()
+		optionFrame:ShowTab(i)
+	end)
+	local buttonWidth = button:GetWidth()
+	function mt:Hide()
+		button:Hide()
+		button:SetWidth(15)
+	end
+	function mt:Show()
+		button:Show()
+		button:SetWidth(buttonWidth)
+	end
+	return mt
+end
+
+-- TODO: Should this go somewhere else?
+_G["DBM_GUI_Raids"] = DBM_GUI:CreateNewTab(L.OTabRaids)
+_G["DBM_GUI_Dungeons"] = DBM_GUI:CreateNewTab(L.OTabDungeons)
+_G["DBM_GUI_Options"] = DBM_GUI:CreateNewTab(L.OTabOptions)
+_G["DBM_GUI_Plugins"] = DBM_GUI:CreateNewTab(L.OTabPlugins)
+_G["DBM_GUI_About"] = DBM_GUI:CreateNewTab(L.OTabAbout)
+
+_G["DBM_GUI_Plugins"]:Hide() -- Only show plugins tab when there are registered plugins

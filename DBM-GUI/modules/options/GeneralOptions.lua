@@ -1,6 +1,8 @@
 local L = DBM_GUI_L
 
 local GeneralPanel = DBM_GUI_Options:CreateNewPanel(L.General)
+GeneralPanel.initial = true
+
 local generaloptions = GeneralPanel:CreateArea(L.General)
 
 local MiniMapIcon = generaloptions:CreateCheckButton(L.EnableMiniMapIcon, true)

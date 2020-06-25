@@ -45,7 +45,6 @@ DBM-GUI_DropDown.lua
 modules\MainFramePrototype.lua
 modules\MainFrame.lua
 modules\PanelPrototype.lua
-modules\ListFrameButtonsPrototype.lua
 
 modules\options\GeneralOptions.lua
 modules\options\Announcements.lua

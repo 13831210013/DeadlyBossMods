@@ -9,27 +9,7 @@ function frame:UpdateMenuFrame()
 	if not listFrame.buttons then
 		return
 	end
-	local frameContainer = _G["DBM_GUI_OptionsFramePanelContainer"]
-	if self.tab and self.tab == 5 then -- About tab... Need a less-hacky way of doing this
-		local selection = DBM_GUI.tabs[self.tab]:GetVisibleButtons()[1]
-		frame:ClearSelection()
-		frame.selection = selection.frame
-		frame:DisplayFrame(selection.frame)
-		listFrame:Hide()
-		frameContainer:SetPoint("TOPLEFT", listFrame, "TOPRIGHT", -205, 0)
-		frameContainer:SetPoint("BOTTOMLEFT", listFrame, "BOTTOMRIGHT", -205, 0)
-		frameContainer:SetPoint("RIGHT", -22, 0)
-		self.hackTab = true
-		return
-	elseif self.hackTab then
-		self.hackTab = false
-		_G["DBM_GUI_OptionsFramePanelContainerFOV"]:Hide()
-		listFrame:Show()
-		frameContainer:SetPoint("TOPLEFT", listFrame, "TOPRIGHT", 16, 0)
-		frameContainer:SetPoint("BOTTOMLEFT", listFrame, "BOTTOMRIGHT", 16, 0)
-		frameContainer:SetPoint("RIGHT", -22, 0)
-	end
-	local displayedElements = self.tab and DBM_GUI.tabs[self.tab]:GetVisibleButtons() or {}
+	local displayedElements = self.tab and DBM_GUI.tabs[self.tab].Buttons or {}
 	local bigList = mfloor((listFrame:GetHeight() - 8) / 18)
 	if #displayedElements > bigList then
 		_G[listFrame:GetName() .. "List"]:Show()
@@ -43,25 +23,27 @@ function frame:UpdateMenuFrame()
 		button:SetWidth(bigList and 185 or 209)
 		button:UnlockHighlight()
 		local element = displayedElements[i + (listFrame.offset or 0)]
-		if not element or i > bigList then
+		if not element or i > bigList or element.initial then
 			button:Hide()
+			button:SetHeight(-1)
 		else
 			button:Show()
-			button.element = element.frame
-			button.text:SetPoint("LEFT", 12 + 8 * element.frame.depth, 2)
-			button.toggle:SetPoint("LEFT", 8 * element.frame.depth - 2, 1)
-			button:SetNormalFontObject(element.frame.depth > 2 and GameFontHighlightSmall or element.frame.depth == 2 and GameFontNormalSmall or GameFontNormal)
-			button:SetHighlightFontObject(element.frame.depth > 2 and GameFontHighlightSmall or element.frame.depth == 2 and GameFontNormalSmall or GameFontNormal)
-			if element.haschilds then
-				button.toggle:SetNormalTexture(element.frame.showSub and 130821 or 130838) -- "Interface\\Buttons\\UI-MinusButton-UP", "Interface\\Buttons\\UI-PlusButton-UP"
-				button.toggle:SetPushedTexture(element.frame.showSub and 130820 or 130836) -- "Interface\\Buttons\\UI-MinusButton-DOWN", "Interface\\Buttons\\UI-PlusButton-DOWN"
+			button:SetHeight(18)
+			button.element = element
+			button.text:SetPoint("LEFT", 12 + 8 * element.depth, 2)
+			button.toggle:SetPoint("LEFT", 8 * element.depth - 2, 1)
+			button:SetNormalFontObject(element.depth > 2 and GameFontHighlightSmall or element.depth == 2 and GameFontNormalSmall or GameFontNormal)
+			button:SetHighlightFontObject(element.depth > 2 and GameFontHighlightSmall or element.depth == 2 and GameFontNormalSmall or GameFontNormal)
+			if element.Buttons and #element.Buttons > 0 then
+				button.toggle:SetNormalTexture(element.showSub and 130821 or 130838) -- "Interface\\Buttons\\UI-MinusButton-UP", "Interface\\Buttons\\UI-PlusButton-UP"
+				button.toggle:SetPushedTexture(element.showSub and 130820 or 130836) -- "Interface\\Buttons\\UI-MinusButton-DOWN", "Interface\\Buttons\\UI-PlusButton-DOWN"
 				button.toggle:Show()
 			else
 				button.toggle:Hide()
 			end
-			button.text:SetText(element.frame.name)
+			button.text:SetText(element.name)
 			button.text:Show()
-			if self.selection == element.frame then
+			if self.selection == element then
 				button:LockHighlight()
 			end
 		end
@@ -113,8 +95,7 @@ function frame:DisplayFrame(frame)
 	FOV:SetScrollChild(frame)
 	FOV:Show()
 	frame:Show()
-	frame:SetWidth(FOV:GetWidth())
-	frame:SetHeight(FOV:GetHeight())
+	frame:SetSize(FOV:GetSize())
 	local scrollBar = _G[FOV:GetName() .. "ScrollBar"]
 	if mymax > 0 then
 		scrollBar:Show()
@@ -224,34 +205,36 @@ function frame:DisplayFrame(frame)
 	end
 end
 
-function frame:DeselectTab(i)
-	_G["DBM_GUI_OptionsFrameTab" .. i .. "Left"]:Show();
-	_G["DBM_GUI_OptionsFrameTab" .. i .. "Middle"]:Show();
-	_G["DBM_GUI_OptionsFrameTab" .. i .. "Right"]:Show();
-	_G["DBM_GUI_OptionsFrameTab" .. i .. "LeftDisabled"]:Hide();
-	_G["DBM_GUI_OptionsFrameTab" .. i .. "MiddleDisabled"]:Hide();
-	_G["DBM_GUI_OptionsFrameTab" .. i .. "RightDisabled"]:Hide();
-	self.tabs[i]:Hide()
-end
-
-function frame:SelectTab(i)
-	_G["DBM_GUI_OptionsFrameTab" .. i .. "Left"]:Hide();
-	_G["DBM_GUI_OptionsFrameTab" .. i .. "Middle"]:Hide();
-	_G["DBM_GUI_OptionsFrameTab" .. i .. "Right"]:Hide();
-	_G["DBM_GUI_OptionsFrameTab" .. i .. "LeftDisabled"]:Show();
-	_G["DBM_GUI_OptionsFrameTab" .. i .. "MiddleDisabled"]:Show();
-	_G["DBM_GUI_OptionsFrameTab" .. i .. "RightDisabled"]:Show();
-	self.tabs[i]:Show()
-end
-
 function frame:ShowTab(tab)
 	self.tab = tab
 	self:UpdateMenuFrame()
-	for i = 1, #self.tabs do
+	for i = 1, #DBM_GUI.tabs do
 		if i == tab then
-			self:SelectTab(i)
+			_G["DBM_GUI_OptionsFrameTab" .. i .. "Left"]:Hide()
+			_G["DBM_GUI_OptionsFrameTab" .. i .. "Middle"]:Hide()
+			_G["DBM_GUI_OptionsFrameTab" .. i .. "Right"]:Hide()
+			_G["DBM_GUI_OptionsFrameTab" .. i .. "LeftDisabled"]:Show()
+			_G["DBM_GUI_OptionsFrameTab" .. i .. "MiddleDisabled"]:Show()
+			_G["DBM_GUI_OptionsFrameTab" .. i .. "RightDisabled"]:Show()
+			for _, panel in ipairs(DBM_GUI.tabs[i].Buttons) do
+				if panel.initial then
+					self:DisplayFrame(panel.frame)
+					return
+				end
+			end
 		else
-			self:DeselectTab(i)
+			_G["DBM_GUI_OptionsFrameTab" .. i .. "Left"]:Show()
+			_G["DBM_GUI_OptionsFrameTab" .. i .. "Middle"]:Show()
+			_G["DBM_GUI_OptionsFrameTab" .. i .. "Right"]:Show()
+			_G["DBM_GUI_OptionsFrameTab" .. i .. "LeftDisabled"]:Hide()
+			_G["DBM_GUI_OptionsFrameTab" .. i .. "MiddleDisabled"]:Hide()
+			_G["DBM_GUI_OptionsFrameTab" .. i .. "RightDisabled"]:Hide()
+			for _, panel in ipairs(DBM_GUI.tabs[i].Buttons) do
+				if panel.initial then
+					panel.frame:Hide()
+					return
+				end
+			end
 		end
 	end
 end
