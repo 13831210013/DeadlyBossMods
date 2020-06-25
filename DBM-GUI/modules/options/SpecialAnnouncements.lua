@@ -1,3 +1,7 @@
+local select, mfloor = select, math.floor
+local GameFontNormalSmall = GameFontNormalSmall
+local DBM, DBM_GUI = DBM, DBM_GUI
+
 local L = DBM_GUI_L
 
 --Hard code STANDARD_TEXT_FONT since skinning mods like to taint it (or worse, set it to nil, wtf?)
@@ -222,9 +226,9 @@ flashdalphaSlider.myheight = 0
 
 local flashRepSlider = specWarnOne:CreateSlider(L.SpecWarn_FlashFrameRepeat, 1, 4, 1, 120)
 flashRepSlider:SetPoint("TOPLEFT", flashdurSlider, "TOPLEFT", 95, -45)
-flashRepSlider:SetValue(math.floor(DBM.Options.SpecialWarningFlashCount1))
+flashRepSlider:SetValue(mfloor(DBM.Options.SpecialWarningFlashCount1))
 flashRepSlider:HookScript("OnValueChanged", function(self)
-	DBM.Options.SpecialWarningFlashCount1 = math.floor(self:GetValue())
+	DBM.Options.SpecialWarningFlashCount1 = mfloor(self:GetValue())
 end)
 flashRepSlider.myheight = 0
 
@@ -288,9 +292,9 @@ flashdalphaSlider2.myheight = 0
 
 local flashRepSlider2 = specWarnOne:CreateSlider(L.SpecWarn_FlashFrameRepeat, 1, 4, 1, 120)
 flashRepSlider2:SetPoint("TOPLEFT", flashdurSlider2, "TOPLEFT", 95, -45)
-flashRepSlider2:SetValue(math.floor(DBM.Options.SpecialWarningFlashCount2))
+flashRepSlider2:SetValue(mfloor(DBM.Options.SpecialWarningFlashCount2))
 flashRepSlider2:HookScript("OnValueChanged", function(self)
-	DBM.Options.SpecialWarningFlashCount2 = math.floor(self:GetValue())
+	DBM.Options.SpecialWarningFlashCount2 = mfloor(self:GetValue())
 	DBM:UpdateSpecialWarningOptions()
 end)
 flashRepSlider2.myheight = 0
@@ -358,9 +362,9 @@ flashdalphaSlider3.myheight = 0
 
 local flashRepSlider3 = specWarnOne:CreateSlider(L.SpecWarn_FlashFrameRepeat, 1, 4, 1, 120)
 flashRepSlider3:SetPoint("TOPLEFT", flashdurSlider3, "TOPLEFT", 95, -45)
-flashRepSlider3:SetValue(math.floor(DBM.Options.SpecialWarningFlashCount3))
+flashRepSlider3:SetValue(mfloor(DBM.Options.SpecialWarningFlashCount3))
 flashRepSlider3:HookScript("OnValueChanged", function(self)
-	DBM.Options.SpecialWarningFlashCount3 = math.floor(self:GetValue())
+	DBM.Options.SpecialWarningFlashCount3 = mfloor(self:GetValue())
 	DBM:UpdateSpecialWarningOptions()
 end)
 flashRepSlider3.myheight = 0
@@ -427,9 +431,9 @@ flashdalphaSlider4.myheight = 0
 
 local flashRepSlider4 = specWarnOne:CreateSlider(L.SpecWarn_FlashFrameRepeat, 1, 4, 1, 120)
 flashRepSlider4:SetPoint("TOPLEFT", flashdurSlider4, "TOPLEFT", 95, -45)
-flashRepSlider4:SetValue(math.floor(DBM.Options.SpecialWarningFlashCount4))
+flashRepSlider4:SetValue(mfloor(DBM.Options.SpecialWarningFlashCount4))
 flashRepSlider4:HookScript("OnValueChanged", function(self)
-	DBM.Options.SpecialWarningFlashCount4 = math.floor(self:GetValue())
+	DBM.Options.SpecialWarningFlashCount4 = mfloor(self:GetValue())
 	DBM:UpdateSpecialWarningOptions()
 end)
 flashRepSlider4.myheight = 0
@@ -494,9 +498,9 @@ flashdalphaSlider5.myheight = 0
 
 local flashRepSlider5 = specWarnOne:CreateSlider(L.SpecWarn_FlashFrameRepeat, 1, 4, 1, 120)
 flashRepSlider5:SetPoint("TOPLEFT", flashdurSlider5, "TOPLEFT", 95, -45)
-flashRepSlider5:SetValue(math.floor(DBM.Options.SpecialWarningFlashCount5))
+flashRepSlider5:SetValue(mfloor(DBM.Options.SpecialWarningFlashCount5))
 flashRepSlider5:HookScript("OnValueChanged", function(self)
-	DBM.Options.SpecialWarningFlashCount5 = math.floor(self:GetValue())
+	DBM.Options.SpecialWarningFlashCount5 = mfloor(self:GetValue())
 	DBM:UpdateSpecialWarningOptions()
 end)
 flashRepSlider5.myheight = 0

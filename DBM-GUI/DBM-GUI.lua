@@ -127,20 +127,13 @@ do
 	end
 end
 
-function DBM_GUI:ShowHide(forceshow)
+function DBM_GUI:ShowHide()
 	local optionsFrame = _G["DBM_GUI_OptionsFrame"]
-	if forceshow == true then
-		self:UpdateModList()
-		optionsFrame:Show()
-	elseif forceshow == false then
+	if optionsFrame:IsShown() then
 		optionsFrame:Hide()
 	else
-		if optionsFrame:IsShown() then
-			optionsFrame:Hide()
-		else
-			self:UpdateModList()
-			optionsFrame:Show()
-		end
+		self:UpdateModList()
+		optionsFrame:Show()
 	end
 end
 
@@ -335,10 +328,12 @@ do
 				DBM:ClearAllStats(addon.modId)
 			end)
 
+			local refresh
+
 			local copyModProfile = modProfileArea:CreateDropdown(L.SelectModProfileCopy, modProfileDropdown, nil, nil, function(value)
 				local name, profile = strsplit("|", value)
 				DBM:CopyAllModOption(addon.modId, name, tonumber(profile))
-				C_Timer.After(0.05, DBM_GUI.dbm_modProfilePanel_refresh)
+				C_Timer.After(0.05, refresh)
 			end, 100)
 			copyModProfile:SetPoint("TOPLEFT", -7, -54)
 			copyModProfile:SetScript("OnShow", function()
@@ -350,7 +345,7 @@ do
 			local copyModSoundProfile = modProfileArea:CreateDropdown(L.SelectModProfileCopySound, modProfileDropdown, nil, nil, function(value)
 				local name, profile = strsplit("|", value)
 				DBM:CopyAllModTypeOption(addon.modId, name, tonumber(profile), "SWSound")
-				C_Timer.After(0.10, DBM_GUI.dbm_modProfilePanel_refresh)
+				C_Timer.After(0.05, refresh)
 			end, 100)
 			copyModSoundProfile.myheight = 0
 			copyModSoundProfile:SetPoint("LEFT", copyModProfile, "RIGHT", 27, 0)
@@ -363,7 +358,7 @@ do
 			local copyModNoteProfile = modProfileArea:CreateDropdown(L.SelectModProfileCopyNote, modProfileDropdown, nil, nil, function(value)
 				local name, profile = strsplit("|", value)
 				DBM:CopyAllModTypeOption(addon.modId, name, tonumber(profile), "SWNote")
-				C_Timer.After(0.10, DBM_GUI.dbm_modProfilePanel_refresh)
+				C_Timer.After(0.05, refresh)
 			end, 100)
 			copyModNoteProfile.myheight = 0
 			copyModNoteProfile:SetPoint("LEFT", copyModSoundProfile, "RIGHT", 27, 0)
@@ -376,7 +371,7 @@ do
 			local deleteModProfile = modProfileArea:CreateDropdown(L.SelectModProfileDelete, modProfileDropdown, nil, nil, function(value)
 				local name, profile = strsplit("|", value)
 				DBM:DeleteAllModOption(addon.modId, name, tonumber(profile))
-				C_Timer.After(0.05, DBM_GUI.dbm_modProfilePanel_refresh)
+				C_Timer.After(0.05, refresh)
 			end, 100)
 			deleteModProfile.myheight = 60
 			deleteModProfile:SetPoint("TOPLEFT", copyModSoundProfile, "BOTTOMLEFT", 0, -10)
@@ -386,7 +381,7 @@ do
 				_G[deleteModProfile:GetName() .. "Text"]:SetText("")
 			end)
 
-			function DBM_GUI:dbm_modProfilePanel_refresh()
+			function refresh()
 				resetButton:GetScript("OnShow")()
 				copyModProfile:GetScript("OnShow")()
 				copyModSoundProfile:GetScript("OnShow")()
@@ -518,44 +513,22 @@ do
 
 	local Categories = {}
 	local subTabId = 0
+	local expansions = {
+		[0] = "CLASSIC",
+		"BC", "WotLK", "CATA", "MOP", "WOD", "LEG", "BFA", "SHADOWLANDS"
+	}
 
 	function DBM_GUI:UpdateModList()
+		local raidsTab = _G["DBM_GUI_Raids"] -- This is here intentionally, as it doesn't exist until later on
+
 		for _, addon in ipairs(DBM.AddOns) do
 			if not Categories[addon.category] then
-				-- Create a Panel for "Wrath of the Lich King" "Burning Crusade" ...
-				local expLevel = GetExpansionLevel()
-				if expLevel == 8 then--Choose default expanded category based on players current expansion is.
-					Categories[addon.category] = DBM_GUI:CreateNewPanel(L["TabCategory_" .. addon.category:upper()] or L.TabCategory_OTHER, nil, (addon.category:upper() == "SHADOWLANDS"))
-				elseif expLevel == 7 then--Choose default expanded category based on players current expansion is.
-					Categories[addon.category] = DBM_GUI:CreateNewPanel(L["TabCategory_" .. addon.category:upper()] or L.TabCategory_OTHER, nil, (addon.category:upper() == "BFA"))
-				elseif expLevel == 6 then
-					Categories[addon.category] = DBM_GUI:CreateNewPanel(L["TabCategory_" .. addon.category:upper()] or L.TabCategory_OTHER, nil, (addon.category:upper() == "LEG"))
-				elseif expLevel == 5 then
-					Categories[addon.category] = DBM_GUI:CreateNewPanel(L["TabCategory_" .. addon.category:upper()] or L.TabCategory_OTHER, nil, (addon.category:upper() == "WOD"))
-				elseif expLevel == 4 then
-					Categories[addon.category] = DBM_GUI:CreateNewPanel(L["TabCategory_" .. addon.category:upper()] or L.TabCategory_OTHER, nil, (addon.category:upper() == "MOP"))
-				elseif expLevel == 3 then
-					Categories[addon.category] = DBM_GUI:CreateNewPanel(L["TabCategory_" .. addon.category:upper()] or L.TabCategory_OTHER, nil, (addon.category:upper() == "CATA"))
-				elseif expLevel == 2 then
-					Categories[addon.category] = DBM_GUI:CreateNewPanel(L["TabCategory_" .. addon.category:upper()] or L.TabCategory_OTHER, nil, (addon.category:upper() == "WotLK"))
-				elseif expLevel == 1 then
-					Categories[addon.category] = DBM_GUI:CreateNewPanel(L["TabCategory_" .. addon.category:upper()] or L.TabCategory_OTHER, nil, (addon.category:upper() == "BC"))
-				else
-					Categories[addon.category] = DBM_GUI:CreateNewPanel(L["TabCategory_" .. addon.category:upper()] or L.TabCategory_OTHER, nil, (addon.category:upper() == "CLASSIC"))
-				end
-				if L["TabCategory_" .. addon.category:upper()] then
-					local ptext = Categories[addon.category]:CreateText(L["TabCategory_" .. addon.category:upper()])
-					ptext:SetPoint("TOPLEFT", Categories[addon.category].frame, "TOPLEFT", 10, -10)
-				end
+				Categories[addon.category] = raidsTab:CreateNewCategory(L["TabCategory_" .. addon.category:upper()] or L.TabCategory_OTHER, addon.category:upper() == expansions[GetExpansionLevel()])
 			end
 
 			if not addon.panel then
 				-- Create a Panel for "Naxxramas" "Eye of Eternity" ...
-				if addon.optionsTab then
-					addon.panel = DBM_GUI:CreateNewPanel(addon.modId or "Error: No-modId", addon.optionsTab, true, nil, addon.name)
-				else
-					addon.panel = Categories[addon.category]:CreateNewPanel(addon.modId or "Error: No-modId", nil, false, nil, addon.name)
-				end
+				addon.panel = Categories[addon.category]:CreateNewPanel(addon.name or "Error: No-modId")
 
 				if not IsAddOnLoaded(addon.modId) then
 					local button = addon.panel:CreateButton(L.Button_LoadMod, 200, 30)
@@ -596,9 +569,9 @@ do
 				if mod.modId == addon.modId then
 					if not mod.panel and (not addon.subTabs or (addon.subPanels and addon.subPanels[mod.subTab])) then
 						if addon.subTabs and addon.subPanels[mod.subTab] then
-							mod.panel = addon.subPanels[mod.subTab]:CreateNewPanel(mod.id or "Error: DBM.Mods", addon.optionsTab, nil, nil, mod.localization.general.name)
+							mod.panel = addon.subPanels[mod.subTab]:CreateNewPanel(mod.localization.general.name)
 						else
-							mod.panel = addon.panel:CreateNewPanel(mod.id or "Error: DBM.Mods", addon.optionsTab, nil, nil, mod.localization.general.name)
+							mod.panel = addon.panel:CreateNewPanel(mod.localization.general.name)
 						end
 						DBM_GUI:CreateBossModPanel(mod)
 					end

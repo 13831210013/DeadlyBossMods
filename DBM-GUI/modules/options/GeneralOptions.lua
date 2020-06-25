@@ -1,3 +1,7 @@
+local tonumber, mfloor = tonumber, math.floor
+local UIParent, GameFontNormalSmall = UIParent, GameFontNormalSmall
+local DBM, DBM_MinimapIcon = DBM, DBM_MinimapIcon
+
 local L = DBM_GUI_L
 
 local GeneralPanel = DBM_GUI_Options:CreateNewPanel(L.General)
@@ -123,7 +127,7 @@ end)
 
 local minWidth, minHeight = optionsFrame:GetMinResize()
 
-local resizeWidth = resizeOptions:CreateEditBox(L.Editbox_WindowWidth, math.floor(DBM.Options.GUIWidth * 10 ^ 2 + 0.5) / 10 ^ 2)
+local resizeWidth = resizeOptions:CreateEditBox(L.Editbox_WindowWidth, mfloor(DBM.Options.GUIWidth * 10 ^ 2 + 0.5) / 10 ^ 2)
 resizeWidth:SetPoint("TOPLEFT", 30, -25)
 resizeWidth:SetScript("OnChar", function(self)
 	self:SetText(self:GetText():gsub("[^%.%d]", ""))
@@ -141,7 +145,7 @@ resizeWidth:SetScript("OnEnterPressed", function(self)
 	optionsFrame:SetSize(DBM.Options.GUIWidth, DBM.Options.GUIHeight)
 end)
 
-local resizeHeight = resizeOptions:CreateEditBox(L.Editbox_WindowHeight, math.floor(DBM.Options.GUIHeight * 10 ^ 2 + 0.5) / 10 ^ 2)
+local resizeHeight = resizeOptions:CreateEditBox(L.Editbox_WindowHeight, mfloor(DBM.Options.GUIHeight * 10 ^ 2 + 0.5) / 10 ^ 2)
 resizeHeight.myheight = 0
 resizeHeight:SetPoint("LEFT", resizeWidth, "RIGHT", 40, 0)
 resizeHeight:SetScript("OnChar", function(self)
@@ -161,6 +165,6 @@ resizeHeight:SetScript("OnEnterPressed", function(self)
 end)
 
 optionsFrame:HookScript("OnSizeChanged", function(self)
-	resizeWidth:SetText(math.floor(self:GetWidth() * 10 ^ 2 + 0.5) / 10 ^ 2)
-	resizeHeight:SetText(math.floor(self:GetHeight() * 10 ^ 2 + 0.5) / 10 ^ 2)
+	resizeWidth:SetText(mfloor(self:GetWidth() * 10 ^ 2 + 0.5) / 10 ^ 2)
+	resizeHeight:SetText(mfloor(self:GetHeight() * 10 ^ 2 + 0.5) / 10 ^ 2)
 end)

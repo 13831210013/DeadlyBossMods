@@ -1,4 +1,5 @@
 local L = DBM_GUI_L
+
 local privacyPanel = DBM_GUI_Options:CreateNewPanel(L.Tab_Privacy)
 
 local privacyWhispersArea = privacyPanel:CreateArea(L.Area_WhisperMessages)

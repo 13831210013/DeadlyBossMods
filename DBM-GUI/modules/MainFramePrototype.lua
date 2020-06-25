@@ -9,7 +9,7 @@ function frame:UpdateMenuFrame()
 	if not listFrame.buttons then
 		return
 	end
-	local displayedElements = self.tab and DBM_GUI.tabs[self.tab].Buttons or {}
+	local displayedElements = self.tab and DBM_GUI.tabs[self.tab]:GetVisibleButtons() or {}
 	local bigList = mfloor((listFrame:GetHeight() - 8) / 18)
 	if #displayedElements > bigList then
 		_G[listFrame:GetName() .. "List"]:Show()

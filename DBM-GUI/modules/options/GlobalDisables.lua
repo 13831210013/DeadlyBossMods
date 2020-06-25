@@ -1,3 +1,5 @@
+local DBM = DBM
+
 local L = DBM_GUI_L
 
 local spamPanel = DBM_GUI_Options:CreateNewPanel(L.Panel_SpamFilter)
@@ -45,7 +47,7 @@ local interruptOptions = {
 	{	text	= L.FilterInterrupts3,	value	= "TandFandAllCooldown"},
 	{	text	= L.FilterInterrupts4,	value	= "Always"},
 }
-local interruptDropDown		= spamSpecArea:CreateDropdown(L.FilterInterruptsHeader, interruptOptions, "DBM", "FilterInterrupt2", function(value)
+local interruptDropDown = spamSpecArea:CreateDropdown(L.FilterInterruptsHeader, interruptOptions, "DBM", "FilterInterrupt2", function(value)
 	DBM.Options.FilterInterrupt2 = value
 end, 410)
 interruptDropDown:SetPoint("TOPLEFT", _G[FilterInterruptNote:GetName() .. "Text"], "BOTTOMLEFT", -26, -5)

@@ -1,3 +1,5 @@
+local DBM = DBM
+
 local L = DBM_GUI_L
 
 local spokenAlertsPanel = DBM_GUI_Options:CreateNewPanel(L.Panel_SpokenAlerts)

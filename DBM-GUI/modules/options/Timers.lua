@@ -1,3 +1,7 @@
+local select = select
+local GameFontNormalSmall = GameFontNormalSmall
+local DBM, DBM_GUI = DBM, DBM_GUI
+
 local L = DBM_GUI_L
 
 --Hard code STANDARD_TEXT_FONT since skinning mods like to taint it (or worse, set it to nil, wtf?)

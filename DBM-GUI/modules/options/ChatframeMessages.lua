@@ -1,4 +1,5 @@
 local L = DBM_GUI_L
+
 local generalWarningPanel = DBM_GUI_Options:CreateNewPanel(L.Tab_GeneralMessages)
 
 local generalCoreArea = generalWarningPanel:CreateArea(L.CoreMessages)

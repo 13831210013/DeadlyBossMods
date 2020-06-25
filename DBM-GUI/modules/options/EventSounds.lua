@@ -1,3 +1,7 @@
+local tonumber = tonumber
+local PlayMusic, StopMusic, GetCVar, SetCVar = PlayMusic, StopMusic, C_CVar.GetCVar, C_CVar.SetCVar
+local DBM, DBM_GUI = DBM, DBM_GUI
+
 local L = DBM_GUI_L
 
 local Sounds = DBM_GUI:MixinSharedMedia3("sound", {

@@ -1,3 +1,6 @@
+local GameFontNormalSmall = GameFontNormalSmall
+local DBM, DBM_GUI = DBM, DBM_GUI
+
 local L		= DBM_GUI_L
 local CL	= DBM_CORE_L
 

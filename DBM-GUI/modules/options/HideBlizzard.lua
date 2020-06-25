@@ -1,3 +1,5 @@
+local DBM = DBM
+
 local L = DBM_GUI_L
 
 local hideBlizzPanel = DBM_GUI_Options:CreateNewPanel(L.Panel_HideBlizzard)
@@ -10,7 +12,7 @@ hideBlizzArea:CreateCheckButton(L.HideGarrisonUpdates, true, nil, "HideGarrisonT
 hideBlizzArea:CreateCheckButton(L.HideGuildChallengeUpdates, true, nil, "HideGuildChallengeUpdates")
 hideBlizzArea:CreateCheckButton(L.HideQuestTooltips, true, nil, "HideQuestTooltips")
 hideBlizzArea:CreateCheckButton(L.HideTooltips, true, nil, "HideTooltips")
-local DisableSFX	= hideBlizzArea:CreateCheckButton(L.DisableSFX, true, nil, "DisableSFX")
+local DisableSFX = hideBlizzArea:CreateCheckButton(L.DisableSFX, true, nil, "DisableSFX")
 
 local movieOptions = {
 	{	text	= L.Disable,	value	= "Never"},

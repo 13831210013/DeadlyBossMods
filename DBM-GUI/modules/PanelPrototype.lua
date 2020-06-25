@@ -1,7 +1,7 @@
 local L		= DBM_GUI_L
 local CL	= DBM_CORE_L
 
-local setmetatable, select, type, tonumber, strsplit, mmax, tinsert, tremove = setmetatable, select, type, tonumber, strsplit, math.max, table.insert, table.remove
+local ipairs, setmetatable, select, type, tonumber, strsplit, mmax, tinsert, tremove = ipairs, setmetatable, select, type, tonumber, strsplit, math.max, table.insert, table.remove
 local CreateFrame, GetCursorPosition, UIParent, GameTooltip, NORMAL_FONT_COLOR, GameFontNormal = CreateFrame, GetCursorPosition, UIParent, GameTooltip, NORMAL_FONT_COLOR, GameFontNormal
 local DBM, DBM_GUI = DBM, DBM_GUI
 
@@ -469,44 +469,57 @@ function PanelPrototype:CreateArea(name)
 	})
 end
 
-do
-	local myid = 100
-
-	function DBM_GUI:CreateNewPanel(frameName, frameType, showSub, sortID, displayName)
-		local panel = CreateFrame("Frame", "DBM_GUI_Option_" .. self:GetNewID(), _G["DBM_GUI_OptionsFramePanelContainer"])
-		panel.mytype = "panel"
-		panel.sortID = self:GetCurrentID()
-		local container = _G["DBM_GUI_OptionsFramePanelContainer"]
-		panel:SetSize(container:GetWidth(), container:GetHeight())
-		panel:SetPoint("TOPLEFT", "DBM_GUI_OptionsFramePanelContainer", "TOPLEFT")
-		panel.name = frameName
-		panel.displayName = displayName or frameName
-		panel.showSub = showSub or showSub == nil
-		if sortID or 0 > 0 then
-			panel.sortid = sortID
-		else
-			myid = myid + 1
-			panel.sortid = myid
-		end
-		panel:Hide()
-		if frameType == "option" then
-			frameType = 2
-		end
-		panel.frameType = frameType
-		PanelPrototype:SetLastObj(panel)
-		self.panels = self.panels or {}
-		tinsert(self.panels, {
-			frame	= panel,
-			parent	= self
-		})
-		panel.panelid = #self.panels
-		return setmetatable(self.panels[#self.panels], {
-			__index = PanelPrototype
-		})
-	end
+function PanelPrototype:CreateNewPanel(frameName, showSub)
+	local panel = CreateFrame("Frame", nil, _G["DBM_GUI_OptionsFramePanelContainer"])
+	panel:SetPoint("TOPLEFT", "DBM_GUI_OptionsFramePanelContainer", "TOPLEFT")
+	panel:Hide()
+	PanelPrototype:SetLastObj(panel)
+	local mt = setmetatable({
+		frame	= panel,
+		parent	= self,
+		depth	= self.depth + 1,
+		showSub	= showSub or showSub == nil,
+		name	= frameName
+	}, {
+		__index = PanelPrototype
+	})
+	return mt
 end
 
 local TabPrototype = {}
+
+local function GetVisibleSubButtons(tab, tabs)
+	for _, v in ipairs(tab.Buttons) do
+		tabs[#tabs + 1] = v
+		if v.Buttons and v.showSub then
+			GetVisibleSubButtons(v, tabs)
+		end
+	end
+end
+
+function TabPrototype:GetVisibleButtons()
+	local tabs = {}
+	for _, v in ipairs(self.Buttons) do
+		tabs[#tabs + 1] = v
+		if v.Buttons and v.showSub then
+			GetVisibleSubButtons(v, tabs)
+		end
+	end
+	return tabs
+end
+
+function TabPrototype:CreateNewCategory(categoryName, showSub)
+	local mt = setmetatable({
+		Buttons	= {},
+		depth	= 1,
+		showSub	= showSub or showSub == nil,
+		name	= categoryName
+	}, {
+		__index = TabPrototype
+	})
+	self.Buttons[#self.Buttons + 1] = mt
+	return mt
+end
 
 function TabPrototype:CreateNewPanel(frameName, showSub)
 	local panel = CreateFrame("Frame", nil, _G["DBM_GUI_OptionsFramePanelContainer"])
@@ -516,7 +529,7 @@ function TabPrototype:CreateNewPanel(frameName, showSub)
 	local mt = setmetatable({
 		frame	= panel,
 		parent	= self,
-		depth	= 1,
+		depth	= self.depth and self.depth + 1 or 1,
 		showSub	= showSub or showSub == nil,
 		name	= frameName
 	}, {
