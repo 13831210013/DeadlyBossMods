@@ -15,9 +15,9 @@ local Sounds = DBM_GUI:MixinSharedMedia3("sound", {
 	}
 })
 
-local eventSoundsPanel			= DBM_GUI_Options:CreateNewPanel(L.Panel_EventSounds)
+local eventSoundsPanel = DBM_GUI_Options:CreateNewPanel(L.Panel_EventSounds)
 
-local eventSoundsGeneralArea	= eventSoundsPanel:CreateArea(L.Area_SoundSelection)
+local eventSoundsGeneralArea = eventSoundsPanel:CreateArea(L.Area_SoundSelection)
 
 local VictorySoundDropdown = eventSoundsGeneralArea:CreateDropdown(L.EventVictorySound, DBM.Victory, "DBM", "EventSoundVictory2", function(value)
 	DBM.Options.EventSoundVictory2 = value
@@ -102,6 +102,6 @@ VictorySoundDropdown3.myheight = 50
 local eventSoundsExtrasArea	= eventSoundsPanel:CreateArea(L.Area_EventSoundsExtras)
 eventSoundsExtrasArea:CreateCheckButton(L.EventMusicCombined, true, nil, "EventSoundMusicCombined")
 
-local eventSoundsFiltersArea= eventSoundsPanel:CreateArea(L.Area_EventSoundsFilters)
+local eventSoundsFiltersArea = eventSoundsPanel:CreateArea(L.Area_EventSoundsFilters)
 eventSoundsFiltersArea:CreateCheckButton(L.EventFilterDungMythicMusic, true, nil, "EventDungMusicMythicFilter")
 eventSoundsFiltersArea:CreateCheckButton(L.EventFilterMythicMusic, true, nil, "EventMusicMythicFilter")
