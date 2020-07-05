@@ -9,7 +9,7 @@ DBM.InfoFrame = {}
 local L = DBM_CORE_L
 local infoFrame = DBM.InfoFrame
 local frame, initializeDropdown, currentMapId, currentEvent, createFrame
-local maxlines, modLines, maxWidth = 5, 5, 0
+local maxlines, modLines = 5, 5
 local sortMethod = 1--1 Default, 2 SortAsc, 3 GroupId
 local lines, sortedLines, icons, value = {}, {}, {}, {}
 local playerName = UnitName("player")
@@ -18,7 +18,7 @@ local playerName = UnitName("player")
 -- Local Globals --
 -------------------
 local GetRaidTargetIndex, UnitName, UnitHealth, UnitPower, UnitPowerMax, UnitIsDeadOrGhost, UnitThreatSituation, UnitPosition, UnitIsUnit = GetRaidTargetIndex, UnitName, UnitHealth, UnitPower, UnitPowerMax, UnitIsDeadOrGhost, UnitThreatSituation, UnitPosition, UnitIsUnit
-local select, tonumber, twipe, mfloor = select, tonumber, table.wipe, math.floor
+local select, tonumber, twipe, mfloor, mmax = select, tonumber, table.wipe, math.floor, math.max
 local RAID_CLASS_COLORS = _G["CUSTOM_CLASS_COLORS"] or RAID_CLASS_COLORS-- for Phanx' Class Colors
 
 ---------------------
@@ -836,7 +836,16 @@ local function onUpdate(frame, table)
 			infoFrame:SetLine(linesShown, icon or leftText, rightText, color.r, color.g, color.b, color2.r, color2.g, color2.b)
 		end
 	end
-	frame:SetHeight((linesShown * 12) + 12)
+	local maxWidth1, maxWidth2 = 0, 0
+	for i = 1, linesShown do
+		maxWidth1 = mmax(maxWidth1, frame.lines[i * 2 - 1]:GetStringWidth())
+		maxWidth2 = mmax(maxWidth2, frame.lines[i * 2]:GetStringWidth())
+	end
+	for i = 1, linesShown do
+		frame.lines[i * 2 - 1]:SetSize(maxWidth1, 12)
+		frame.lines[i * 2]:SetSize(maxWidth2, 12)
+	end
+	frame:SetSize(maxWidth1 + maxWidth2 + 24, (linesShown * 12) + 12)
 	frame:Show()
 end
 
@@ -946,7 +955,6 @@ function infoFrame:ClearLines()
 		frame.lines[i]:SetText("")
 		frame.lines[i]:Hide()
 	end
-	maxWidth = 0
 end
 
 function infoFrame:CreateLine(lineNum)
@@ -977,20 +985,9 @@ function infoFrame:SetLine(lineNum, leftText, rightText, colorR, colorG, colorB,
 	frame.lines[lineNum]:SetText(leftText)
 	frame.lines[lineNum]:SetTextColor(colorR or 255, colorG or 255, colorB or 255)
 	frame.lines[lineNum]:Show()
-	frame.lines[lineNum]:SetSize(100, 12)
-	local leftTextWidth = frame.lines[lineNum]:GetStringWidth()
 	frame.lines[lineNum + 1]:SetText(rightText)
 	frame.lines[lineNum + 1]:SetTextColor(color2R or 255, color2G or 255, color2B or 255)
 	frame.lines[lineNum + 1]:Show()
-	frame.lines[lineNum + 1]:SetSize(100, 12)
-	local rightTextWidth = frame.lines[lineNum + 1]:GetStringWidth()
-	frame.lines[lineNum]:SetSize(leftTextWidth, 12)
-	frame.lines[lineNum + 1]:SetSize(rightTextWidth, 12)
-	local testWidth = leftTextWidth + rightTextWidth + 24
-	if testWidth > maxWidth then
-		frame:SetWidth(testWidth)
-		maxWidth = testWidth
-	end
 end
 
 function infoFrame:Hide()
