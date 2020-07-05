@@ -145,6 +145,7 @@ end
 ------------------------
 function createFrame()
 	frame = CreateFrame("Frame", "DBMInfoFrame", UIParent, DBM:IsAlpha() and "BackdropTemplate")
+	frame:Hide()
 	frame:SetFrameStrata("DIALOG")
 	frame.backdropInfo = {
 		bgFile		= "Interface\\DialogFrame\\UI-DialogBox-Background", -- 131071
