@@ -20,9 +20,10 @@ mod:RegisterEventsInCombat(
 
 --https://shadowlands.wowhead.com/npc=165108/illusionary-clone Clones
 --TODO, improve dodgeball warnings if the target scan is successful
+--TODO, auto mark adds during guessing game (use Penalizing Burst to grab GUIDS)
 local warnGuessingGame				= mod:NewCastAnnounce(321471, 3)
 local warnFreezeTag					= mod:NewCastAnnounce(321873, 3)
-local warnFixate					= mod:NewTargetNoFIlterAnnounce(321891, 3)
+local warnFixate					= mod:NewTargetNoFilterAnnounce(321891, 3)
 
 local specWarnDodgeBall				= mod:NewSpecialWarningDodge(321834, nil, nil, nil, 2, 2)
 local yellDodgeBall					= mod:NewYell(321834)

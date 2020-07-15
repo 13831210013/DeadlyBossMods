@@ -37,7 +37,6 @@ globals = {
 	"DBM_GUI_Options",
 	"DBM_OPTION_SPACER",
 	"DBM",
-	"DBMHudMap",
 	"DBT",
 	"LOCALE_koKR",
 	"LOCALE_ruRU",
@@ -93,6 +92,7 @@ globals = {
 
 	-- FrameXML frames
 	"AlertFrame",
+	"BackdropTemplateMixin",
 	"BonusRollFrame",
 	"GameTooltip",
 	"ItemRefTooltip",

@@ -71,8 +71,8 @@ end
 
 DBM = {
 	Revision = parseCurseDate("@project-date-integer@"),
-	DisplayVersion = "8.3.27 alpha", -- the string that is shown as version
-	ReleaseRevision = releaseDate(2020, 6, 12) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
+	DisplayVersion = "8.3.28 alpha", -- the string that is shown as version
+	ReleaseRevision = releaseDate(2020, 7, 14) -- the date of the latest stable version that is available, optionally pass hours, minutes, and seconds for multiple releases in one day
 }
 DBM.HighestRelease = DBM.ReleaseRevision --Updated if newer version is detected, used by update nags to reflect critical fixes user is missing on boss pulls
 
@@ -466,7 +466,7 @@ local dataBroker
 local voiceSessionDisabled = false
 local handleSync
 
-local fakeBWVersion, fakeBWHash = 184, "b79a38c"
+local fakeBWVersion, fakeBWHash = 184, "2219ff0"--184.3
 local bwVersionResponseString = "V^%d^%s"
 local enableIcons = true -- set to false when a raid leader or a promoted player has a newer version of DBM
 
@@ -2235,7 +2235,7 @@ do
 			if type(hudType) == "string" and hudType:trim() ~= "" then
 				if hudType:upper() == "HIDE" then
 					for name, _ in pairs(trackedHudMarkers) do
-						DBMHudMap:FreeEncounterMarkerByTarget(12345, name)
+						DBM.HudMap:FreeEncounterMarkerByTarget(12345, name)
 						trackedHudMarkers[name] = nil
 					end
 					return
@@ -2264,8 +2264,8 @@ do
 				if hudType:upper() == "ARROW" then
 					local _, targetClass = UnitClass(uId)
 					local color2 = RAID_CLASS_COLORS[targetClass]
-					local m1 = DBMHudMap:RegisterRangeMarkerOnPartyMember(12345, "party", playerName, 0.1, hudDuration, 0, 1, 0, 1, nil, false):Appear()
-					local m2 = DBMHudMap:RegisterRangeMarkerOnPartyMember(12345, "party", targetName, 0.75, hudDuration, color2.r, color2.g, color2.b, 1, nil, false):Appear()
+					local m1 = DBM.HudMap:RegisterRangeMarkerOnPartyMember(12345, "party", playerName, 0.1, hudDuration, 0, 1, 0, 1, nil, false):Appear()
+					local m2 = DBM.HudMap:RegisterRangeMarkerOnPartyMember(12345, "party", targetName, 0.75, hudDuration, color2.r, color2.g, color2.b, 1, nil, false):Appear()
 					trackedHudMarkers[playerName] = true
 					trackedHudMarkers[targetName] = true
 					m2:EdgeTo(m1, nil, hudDuration, 0, 1, 0, 1)
@@ -2273,23 +2273,23 @@ do
 				elseif hudType:upper() == "DOT" then
 					local _, targetClass = UnitClass(uId)
 					local color2 = RAID_CLASS_COLORS[targetClass]
-					DBMHudMap:RegisterRangeMarkerOnPartyMember(12345, "party", targetName, 0.75, hudDuration, color2.r, color2.g, color2.b, 1, nil, false):Appear()
+					DBM.HudMap:RegisterRangeMarkerOnPartyMember(12345, "party", targetName, 0.75, hudDuration, color2.r, color2.g, color2.b, 1, nil, false):Appear()
 					trackedHudMarkers[targetName] = true
 					success = true
 				elseif hudType:upper() == "GREEN" then
-					DBMHudMap:RegisterRangeMarkerOnPartyMember(12345, "highlight", targetName, 3.5, hudDuration, 0, 1, 0, 0.5, nil, false):Pulse(0.5, 0.5)
+					DBM.HudMap:RegisterRangeMarkerOnPartyMember(12345, "highlight", targetName, 3.5, hudDuration, 0, 1, 0, 0.5, nil, false):Pulse(0.5, 0.5)
 					trackedHudMarkers[targetName] = true
 					success = true
 				elseif hudType:upper() == "RED" then
-					DBMHudMap:RegisterRangeMarkerOnPartyMember(12345, "highlight", targetName, 3.5, hudDuration, 1, 0, 0, 0.5, nil, false):Pulse(0.5, 0.5)
+					DBM.HudMap:RegisterRangeMarkerOnPartyMember(12345, "highlight", targetName, 3.5, hudDuration, 1, 0, 0, 0.5, nil, false):Pulse(0.5, 0.5)
 					trackedHudMarkers[targetName] = true
 					success = true
 				elseif hudType:upper() == "YELLOW" then
-					DBMHudMap:RegisterRangeMarkerOnPartyMember(12345, "highlight", targetName, 3.5, hudDuration, 1, 1, 0, 0.5, nil, false):Pulse(0.5, 0.5)
+					DBM.HudMap:RegisterRangeMarkerOnPartyMember(12345, "highlight", targetName, 3.5, hudDuration, 1, 1, 0, 0.5, nil, false):Pulse(0.5, 0.5)
 					trackedHudMarkers[targetName] = true
 					success = true
 				elseif hudType:upper() == "BLUE" then
-					DBMHudMap:RegisterRangeMarkerOnPartyMember(12345, "highlight", targetName, 3.5, hudDuration, 0, 0, 1, 0.5, nil, false):Pulse(0.5, 0.5)
+					DBM.HudMap:RegisterRangeMarkerOnPartyMember(12345, "highlight", targetName, 3.5, hudDuration, 0, 0, 1, 0.5, nil, false):Pulse(0.5, 0.5)
 					trackedHudMarkers[targetName] = true
 					success = true
 				elseif hudType:upper() == "ICON" then
@@ -2299,7 +2299,7 @@ do
 						return
 					end
 					local iconString = DBM:IconNumToString(icon):lower()
-					DBMHudMap:RegisterRangeMarkerOnPartyMember(12345, iconString, targetName, 3.5, hudDuration, 1, 1, 1, 0.5, nil, false):Pulse(0.5, 0.5)
+					DBM.HudMap:RegisterRangeMarkerOnPartyMember(12345, iconString, targetName, 3.5, hudDuration, 1, 1, 1, 0.5, nil, false):Pulse(0.5, 0.5)
 					trackedHudMarkers[targetName] = true
 					success = true
 				else
@@ -2438,7 +2438,7 @@ do
 	end
 	SlashCmdList["DBMHUDAR"] = function(msg)
 		local r = tonumber(msg) or 10
-		DBMHudMap:ToggleHudar(r)
+		DBM.HudMap:ToggleHudar(r)
 	end
 	SlashCmdList["DBMRRANGE"] = function(msg)
 		local r = tonumber(msg) or 10
@@ -3306,8 +3306,10 @@ function DBM:LoadModOptions(modId, inCombat, first)
 			--Why are saved options cleaned twice?
 			if not inCombat then
 				for option, _ in pairs(savedOptions[id][profileNum]) do
-					-- Fix incase an option becomes "invalid", we just void it
-					if type(option) ~= "string" or (mod.DefaultOptions[option] == nil and not (option:find("talent") or option:find("FastestClear"))) then
+					if type(option) == "number" then
+						DBM:Debug("|cffff0000Everybody knows shit's fucked: |r"..option)
+					end
+					if (mod.DefaultOptions[option] == nil) and not (option:find("talent") or option:find("FastestClear") or option:find("CVAR") or option:find("RestoreSetting")) then
 						savedOptions[id][profileNum][option] = nil
 					elseif mod.DefaultOptions[option] and (type(mod.DefaultOptions[option]) == "table") then--recover broken dropdown option
 						if savedOptions[id][profileNum][option] and (type(savedOptions[id][profileNum][option]) == "boolean") then
@@ -3365,7 +3367,7 @@ function DBM:LoadModOptions(modId, inCombat, first)
 	--Why are saved options cleaned twice?
 	if not inCombat then
 		for id, _ in pairs(savedOptions) do
-			if not existId[id] and not (id:find("talent") or id:find("FastestClear")) then
+			if not existId[id] and not (id:find("talent") or id:find("FastestClear") or id:find("CVAR") or id:find("RestoreSetting")) then
 				savedOptions[id] = nil
 			end
 		end
@@ -4004,7 +4006,7 @@ do
 		end
 		if DBM:HasMapRestrictions() then
 			DBM.Arrow:Hide()
-			DBMHudMap:Disable()
+			DBM.HudMap:Disable()
 			if DBM.RangeCheck:IsRadarShown() then
 				DBM.RangeCheck:Hide(true)
 			end
@@ -4031,7 +4033,7 @@ do
 		self:Schedule(5, SecondaryLoadCheck, self)
 		if DBM:HasMapRestrictions() then
 			DBM.Arrow:Hide()
-			DBMHudMap:Disable()
+			DBM.HudMap:Disable()
 			if DBM.RangeCheck:IsRadarShown() then
 				DBM.RangeCheck:Hide(true)
 			end
@@ -4563,21 +4565,19 @@ do
 					AddMsg(DBM, L.UPDATEREMINDER_HEADER:match("([^\n]*)"))
 					AddMsg(DBM, L.UPDATEREMINDER_HEADER:match("\n(.*)"):format(displayVersion, showRealDate(version)))
 					showConstantReminder = 1
-				elseif not noRaid and #newerVersionPerson == 3 and updateNotificationDisplayed < 3 then--The following code requires at least THREE people to send that higher revision. That should be more than adaquate
+				elseif not noRaid and #newerVersionPerson == 3 and raid[newerVersionPerson[1]] and raid[newerVersionPerson[2]] and raid[newerVersionPerson[3]] and updateNotificationDisplayed < 3 then--The following code requires at least THREE people to send that higher revision. That should be more than adaquate
 					--Disable if revision grossly out of date even if not major patch.
-					if raid[newerVersionPerson[1]] and raid[newerVersionPerson[2]] and raid[newerVersionPerson[3]] then
-						local revDifference = mmin(((raid[newerVersionPerson[1]].revision or 0) - DBM.Revision), ((raid[newerVersionPerson[2]].revision or 0) - DBM.Revision), ((raid[newerVersionPerson[3]].revision or 0) - DBM.Revision))
-						if revDifference > 100000000 then--Approx 1 month old 20190416172622
-							if updateNotificationDisplayed < 3 then
-								updateNotificationDisplayed = 3
-								AddMsg(DBM, L.UPDATEREMINDER_DISABLE)
-								DBM:Disable(true)
-							end
+					local revDifference = mmin(((raid[newerVersionPerson[1]].revision or 0) - DBM.Revision), ((raid[newerVersionPerson[2]].revision or 0) - DBM.Revision), ((raid[newerVersionPerson[3]].revision or 0) - DBM.Revision))
+					if revDifference > 100000000 then--Approx 1 month old 20190416172622
+						if updateNotificationDisplayed < 3 then
+							updateNotificationDisplayed = 3
+							AddMsg(DBM, L.UPDATEREMINDER_DISABLE)
+							DBM:Disable(true)
 						end
 					--Disable if out of date and it's a major patch.
 					elseif not testBuild and dbmToc < wowTOC then
 						updateNotificationDisplayed = 3
-						AddMsg(DBM, L.UPDATEREMINDER_MAJORPATCH)
+						AddMsg(DBM, L.UPDATEREMINDER_MAJORPATCH)--Major patches will ALWAYS ignore ShowReminders being disabled
 						DBM:Disable(true)
 					end
 				end
@@ -6183,7 +6183,7 @@ do
 				self:Schedule(3, mod.Stop, mod) -- Remove accident started timers.
 				mod.inCombatOnlyEventsRegistered = nil
 				if mod.OnCombatEnd then
-					self:Schedule(3, mod.OnCombatEnd, mod, wipe) -- Remove accidentally shown frames
+					self:Schedule(3, mod.OnCombatEnd, mod, wipe, true) -- Remove accidentally shown frames
 				end
 			end
 			if mod.updateInterval then
@@ -7423,7 +7423,7 @@ do
 
 	function DBM:CINEMATIC_START()
 		self:Debug("CINEMATIC_START fired", 2)
-		DBMHudMap:SupressCanvas()
+		DBM.HudMap:SupressCanvas()
 		local isInstance, instanceType = IsInInstance()
 		if not isInstance or C_Garrison:IsOnGarrisonMap() or instanceType == "scenario" or self.Options.MovieFilter2 == "Never" or DBM.Options.MovieFilter2 == "OnlyFight" and not IsEncounterInProgress() then return end
 		local currentMapID = C_Map.GetBestMapForUnit("player")
@@ -7438,7 +7438,7 @@ do
 	end
 	function DBM:CINEMATIC_STOP()
 		self:Debug("CINEMATIC_STOP fired", 2)
-		DBMHudMap:UnSupressCanvas()
+		DBM.HudMap:UnSupressCanvas()
 	end
 end
 
@@ -9234,8 +9234,11 @@ do
 			error("NewAnnounce: you must provide announce text", 2)
 			return
 		end
+		if type(text) == "number" then
+			DBM:Debug("|cffff0000NewAnnounce: Non auto localized text cannot be numbers, fix this for |r"..text)
+		end
 		if type(optionName) == "number" then
-			DBM:Debug("Non auto localized optionNames cannot be numbers, fix this for "..text)
+			DBM:Debug("|cffff0000NewAnnounce: Non auto localized optionNames cannot be numbers, fix this for |r"..text)
 			optionName = nil
 		end
 		if soundOption and type(soundOption) == "boolean" then
@@ -9475,11 +9478,9 @@ do
 		return obj
 	end
 
+	--Standard "Yell" object that will use SAY/YELL based on what's defined in the object (Defaulting to SAY if nil)
+	--I realize object being :Yell is counter intuitive to default being "SAY" but for many years the default was YELL and it's too many years of mods to change now
 	function yellPrototype:Yell(...)
-		if not IsInInstance() then--as of 8.2.5, forbidden in outdoor world
-			DBM:Debug("WARNING: A mod is still trying to call chat SAY/YELL messages outdoors, FIXME")
-			return
-		end
 		if DBM.Options.DontSendYells or self.yellType and self.yellType == "position" and DBM:UnitBuff("player", voidForm) and DBM.Options.FilterVoidFormSay then return end
 		if not self.option or self.mod.Options[self.option] then
 			SendChatMessage(pformat(self.text, ...), self.chatType or "SAY")
@@ -9489,10 +9490,6 @@ do
 
 	--Force override to use say message, even when object defines "YELL"
 	function yellPrototype:Say(...)
-		if not IsInInstance() then--as of 8.2.5, forbidden in outdoor world
-			DBM:Debug("WARNING: A mod is still trying to call chat SAY/YELL messages outdoors, FIXME")
-			return
-		end
 		if DBM.Options.DontSendYells or self.yellType and self.yellType == "position" and DBM:UnitBuff("player", voidForm) and DBM.Options.FilterVoidFormSay then return end
 		if not self.option or self.mod.Options[self.option] then
 			SendChatMessage(pformat(self.text, ...), "SAY")
@@ -9503,6 +9500,7 @@ do
 		return schedule(t, self.Yell, self.mod, self, ...)
 	end
 
+	--Standard schedule object to schedule a say/yell based on what's defined in object
 	function yellPrototype:Countdown(time, numAnnounces, ...)
 		if time > 60 then--It's a spellID not a time
 			local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", time)
@@ -9512,6 +9510,19 @@ do
 			end
 		else
 			scheduleCountdown(time, numAnnounces, self.Yell, self.mod, self, ...)
+		end
+	end
+
+	--Scheduled Force override to use SAY message, even when object defines "YELL"
+	function yellPrototype:CountdownSay(time, numAnnounces, ...)
+		if time > 60 then--It's a spellID not a time
+			local _, _, _, _, _, expireTime = DBM:UnitDebuff("player", time)
+			if expireTime then
+				local remaining = expireTime-GetTime()
+				scheduleCountdown(remaining, numAnnounces, self.Yell, self.mod, self, ...)
+			end
+		else
+			scheduleCountdown(time, numAnnounces, self.Say, self.mod, self, ...)
 		end
 	end
 
@@ -11317,6 +11328,16 @@ function bossModPrototype:AddReadyCheckOption(questId, default, maxLevel)
 	self.Options["ReadyCheck"] = (default == nil) or default
 	self.localization.options["ReadyCheck"] = L.AUTO_READY_CHECK_OPTION_TEXT
 	self:SetOptionCategory("ReadyCheck", "misc")
+end
+
+function bossModPrototype:AddSpeedClearOption(name, default)
+	self.DefaultOptions["SpeedClearTimer"] = (default == nil) or default
+	if default and type(default) == "string" then
+		default = self:GetRoleFlagValue(default)
+	end
+	self.Options["SpeedClearTimer"] = (default == nil) or default
+	self:SetOptionCategory("SpeedClearTimer", "timer")
+	self.localization.options["SpeedClearTimer"] = L.AUTO_SPEEDCLEAR_OPTION_TEXT:format(name)
 end
 
 function bossModPrototype:AddSliderOption(name, minValue, maxValue, valueStep, default, cat, func)
